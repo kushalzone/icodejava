@@ -1,4 +1,4 @@
-package com.icodejava.research.ready;
+package com.icodejava.blog.published.maths;
 /**
  * 
  * @author Kushal Paudyal
