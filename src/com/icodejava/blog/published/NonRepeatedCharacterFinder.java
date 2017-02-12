@@ -1,4 +1,4 @@
-package com.icodejava.research;
+package com.icodejava.blog.published;
 
 import java.util.HashMap;
 import java.util.Map;
