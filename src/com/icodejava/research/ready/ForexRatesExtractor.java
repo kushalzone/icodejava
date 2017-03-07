@@ -1,4 +1,4 @@
-package com.icodejava.research;
+package com.icodejava.research.ready;
 
 /**
  * @author Kushal Paudyal
