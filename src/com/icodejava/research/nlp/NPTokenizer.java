@@ -24,16 +24,16 @@ public class NPTokenizer {
 
     public static void main(String args[]) throws FileNotFoundException, IOException {
 
-        //String text = new String(FileUtilities.loadFile("C:\\temp\\np.txt"));
+        String text = new String(FileUtilities.loadFile("C:\\Users\\paudyals\\Desktop\\NLP\\nepali_sambidhan.txt"));
         
-    	String text = HtmlTextExtractor.extractTextFromWeb("http://swasthyakhabar.com/news-details/3110/2017-02-23");
+    	//String text = HtmlTextExtractor.extractTextFromWeb("http://swasthyakhabar.com/news-details/3110/2017-02-23");
         
 
         
         //System.out.println("=====OriginalText=====\n" + text);
 
-        System.out.println("\n=====TokenizedSentences=====\n");
-        tokenizeSentence(text, Terminator.NP);
+//        System.out.println("\n=====TokenizedSentences=====\n");
+  //      tokenizeSentence(text, Terminator.NP);
 
         //System.out.println("\n=====TokenizedWords=====\n");
         //tokenizeWords(text);

@@ -37,7 +37,8 @@ public class WordFrequency<T> implements Comparable<Integer> {
     }
 
     public String toString() {
-        return getWord() + "{"+getWord().length()+"}"+ " -> " + getFrequency();
+        //return getWord() + "{"+getWord().length()+"}"+ " -> " + getFrequency();
+        return getWord() +  " -> " + getFrequency() +"\n";
     }
 
 }
