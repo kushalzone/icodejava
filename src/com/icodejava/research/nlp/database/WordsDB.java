@@ -8,32 +8,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 
-public class WebsitesDB extends DatabaseUtility {
-
-	/*
+public class WordsDB extends DatabaseUtility{
+	/**
 	 * ID
-	 * DOMAIN
-	 * URL
-	 * CREATED_DATE
-	 * CRAWLED_DATE
+	 * SENTENCE_ID
+	 * SEQ_ID
+	 * WORD
 	 */
 	
-	public static void main(String args[]) {
-		// createWebsitesTable();
-		// deleteAllRecords(Tables.WEBSITES);
-		// deleteRecordsByID(6);
-		 //deleteRecordsByDomain("https://www.mysansar.com");
-		// deleteRecordsByURL("http://www.sanjaal.com/test/test.php");//NOT
-		// TESTED
-		// insertWebsite("http://www.sanjaal.com/",
-		// "http://www.sanjaal.com/test/test.php");
-		// selectAllWebsites();
-		 selectUncrawledWebsites("http://www.mysansar.com", 10);
-		
-
-	}
-
-	public static void printRowCountByDomain() {
+	/*
+	 * 
+	 public static void printRowCountByDomain() {
 		String sql = "SELECT DOMAIN, COUNT(*) FROM WEBSITES GROUP BY DOMAIN ORDER BY 2 DESC";
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
@@ -49,12 +34,8 @@ public class WebsitesDB extends DatabaseUtility {
 	}
 
 	public static void createWebsitesTable() {
-		String sql = "CREATE TABLE IF NOT EXISTS WEBSITES (\n" 
-					+ " ID integer PRIMARY KEY AUTOINCREMENT,\n"
-					+ " DOMAIN text NOT NULL,\n" 
-					+ " URL text NOT NULL,\n" 
-					+ " CREATED_DATE DATE NOT NULL, \n" 
-					+ " CRAWLED_DATE DATE);";
+		String sql = "CREATE TABLE IF NOT EXISTS WORDS (\n" + " ID integer PRIMARY KEY AUTOINCREMENT,\n"
+				+ " DOMAIN text NOT NULL,\n" + " WORD text NOT NULL,\n" + " CRAWLED_DATE DATE NOT NULL \n" + ");";
 
 		createNewTable(sql);
 	}
@@ -65,7 +46,7 @@ public class WebsitesDB extends DatabaseUtility {
 			return rowID;
 		}
 
-		String sql = "INSERT INTO WEBSITES (DOMAIN, URL, CREATED_DATE) VALUES(?,?,?)";
+		String sql = "INSERT INTO WEBSITES (DOMAIN, URL, CRAWLED_DATE) VALUES(?,?,?)";
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -155,24 +136,6 @@ public class WebsitesDB extends DatabaseUtility {
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	public static void selectUncrawledWebsites(String domain, int howMany) {
-		String sql = "SELECT * FROM WEBSITES WHERE DOMAIN=\""+domain+"\" LIMIT " + howMany;
-
-		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
-				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)) {
-
-			while (rs.next()) {
-				System.out.println(rs.getInt("ID") + "\t" + rs.getString("DOMAIN") + "\t" + rs.getString("URL") + "\t"
-						+ rs.getString("CREATED_DATE") +"\t" +  rs.getString("CRAWLED_DATE"));
-			}
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-	
-	
 
 	public static boolean alreadyExists(String domain, String url) {
 		boolean alreadyExists = false;
@@ -193,5 +156,6 @@ public class WebsitesDB extends DatabaseUtility {
 
 		return alreadyExists;
 	}
+	*/
 
 }

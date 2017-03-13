@@ -12,7 +12,7 @@ public class HtmlTextExtractor {
 	}
 
 	public static String extractTextFromWeb(String url) throws IOException {
-		Document doc = Jsoup.connect(url).get();
+		Document doc = Jsoup.connect(url).userAgent("Mozilla").get();
 		
 		return doc.body().text();
 	}

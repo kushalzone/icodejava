@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -43,7 +44,7 @@ public class DatabaseUtility {
         try (Connection conn = DriverManager.getConnection(DATABASE_URL);
                 Statement stmt = conn.createStatement()) {
             // create a new table
-            System.out.println("SQL to create new table\n" + sql );
+            //System.out.println("SQL to create new table\n" + sql );
             boolean result = stmt.execute(sql);
             if(result) {
             	System.out.println("The table has been successfully created");
@@ -71,6 +72,24 @@ public class DatabaseUtility {
 	     }
 	
 	}
+	
+    public static int getRowCount(String table){
+    	int rowCount = 0;
+        String sql = "SELECT count(*) FROM "+ table;
+
+        try (Connection conn = DriverManager.getConnection( DATABASE_URL);
+             Statement stmt  = conn.createStatement();
+             ResultSet rs    = stmt.executeQuery(sql)){
+
+            if (rs.next()) {
+                System. out.println("\n=================\nTotal Row Count in "+table+" table " + (rowCount = rs.getInt(1)));
+            }
+        } catch (SQLException e) {
+            System. out.println(e.getMessage());
+        }
+        
+        return rowCount;
+    }
 
 
 }

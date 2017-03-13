@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="itextpdf-5.5.10.jar"/>
 	<classpathentry kind="lib" path="commons-codec-1.10.jar"/>
 	<classpathentry kind="lib" path="jsoup-1.10.1.jar"/>
+	<classpathentry kind="lib" path="sqlite-jdbc-3.16.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
