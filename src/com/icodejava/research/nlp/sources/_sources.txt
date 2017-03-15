@@ -1,10 +1,10 @@
-http://www.nepalihimal.com
+	http://www.nepalihimal.com
 http://www.onlinekhabar.com
 http://www.kantipur.com
 http://www.barhakhari.com
 http://www.onlinepost.com
 http://www.annapurnapost.com
-http://www.setopati.com
+http://www.newsnrn.com
 http://www.ratopati.com
 http://www.sanjaal.com
 http://www.majheri.com
@@ -30,7 +30,6 @@ http://ujyaaloonline.com
 http://www.souryadaily.com
 http://eadarsha.com
 http://gorkhapatraonline.com
-	http://hamrakura.com
 http://aajakokhabar.com
 http://www.shukrabar.com
 http://teacher.org.np
@@ -49,6 +48,8 @@ http://News24nepal.tv
 http://Newsofnepal.com
 http://Nepalipost.com
 http://Weeklynepal.com.np
-http://www.karobardaily.com
+	http://www.karobardaily.com
 	http://tokyonepal.com
 	http://www.samakalinsahitya.com
+	http://www.setopati.com
+	http://hamrakura.com
