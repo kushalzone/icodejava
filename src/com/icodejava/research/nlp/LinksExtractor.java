@@ -1,14 +1,14 @@
 package com.icodejava.research.nlp;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.jsoup.Jsoup;
-import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.icodejava.blog.published.utilities.FileUtilities;
-
-import java.io.IOException;
 
 /**
  * Example program to list links from a URL.
@@ -27,15 +27,54 @@ public class LinksExtractor {
     	//String url = "http://www.mysansar.com/category/saturday-fiction/page/";//1-9
     	//String url = "http://tokyonepal.com/category/nepal-news/page/"; //1-387
     	//String url = "http://nepalipost.com/index/?catid=1&php=1&p="; // 1-769
-    	String url="http://www.samakalinsahitya.com/index.php?show=category&cat_id=24&page="; //1:0-11,2:0-6,3:0-28,4:0-9,5:0-23,8:0-2,10:0-3,11:0-4,13:0-10,16:0-3,17:0-1,18:0-1,20:0-1,24:0-2
-        for(int i=0;i<=2;i++) {
+    	//String url="http://www.samakalinsahitya.com/index.php?show=category&cat_id=24&page="; //1:0-11,2:0-6,3:0-28,4:0-9,5:0-23,8:0-2,10:0-3,11:0-4,13:0-10,16:0-3,17:0-1,18:0-1,20:0-1,24:0-2
+        
+    	/*String url="http://www.newsnrn.com/category/america/page/";//1-73 HAS ISSUES
+    	 * */
+    	//String url="http://www.nagariknews.com/category/21?page="; //1-203
+    	//String url = "http://www.nagariknews.com/category/22?page="; //1-94
+    	String url = "http://www.nagariknews.com/category/24?page="; //1-228
+    	/*
+    	 * TODO:Extract Following
+
+http://www.nagariknews.com/category/25?page=31
+http://www.nagariknews.com/category/26?page=71
+http://www.nagariknews.com/category/27?page=46
+http://www.nagariknews.com/category/28?page=13
+http://www.nagariknews.com/category/33?page=8
+http://www.nagariknews.com/category/81?page=55
+http://www.nagariknews.com/category/82?page=4
+http://www.nagariknews.com/category/37?page=3
+    	 */
+    	//SINGLE PAGE
+    	for(int i=37;i<=228;i++) {
         	extractLinks(url+i);
         	//extractLinks(url+i+"/");
-        	
-        	
         	Thread.sleep(2000);
         }
+    	
+    	//MULTIPLE PAGES
+    	//extractLinksFromFile("src/com/icodejava/research/nlp/sources/temp/temp.txt");
         
+    }
+    
+    /*
+     * This method reads a list links from a file, loads those pages and extracts links from those pages.
+     */
+    private static void extractLinksFromFile(String fileName) throws IOException, InterruptedException {
+    	List<String> pages = FileUtilities.readUTF8FileAsList(fileName);
+    	
+    	for(String page: pages) {
+    		try{
+    		extractLinks(page);
+    		Thread.sleep(3000);
+    		}
+    		catch(Exception e) {
+    			e.printStackTrace();
+    		}
+    	}
+    	//System.out.println(pages);
+    	
     }
 
 	private static void extractLinks(String url) throws IOException {

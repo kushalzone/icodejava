@@ -18,6 +18,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
  
 public class FileUtilities {
  
@@ -95,6 +97,35 @@ public class FileUtilities {
                 System.out.println(line);
                 content += line;
                  
+ 
+            }
+ 
+            in.close();
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return content;
+    }
+    
+    /**
+     * Reads a file line by line and returns an arraylist of lines
+     * @param fileName
+     * @return
+     */
+    public static List<String> readUTF8FileAsList(String fileName) {
+    	 
+        List<String> content = new ArrayList<String>();
+ 
+        try {
+ 
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF8"));
+ 
+            String line;
+            while ((line = in.readLine()) != null) {
+ 
+                //System.out.println(line);
+                content.add(line); 
  
             }
  

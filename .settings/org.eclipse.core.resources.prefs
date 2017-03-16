@@ -1,3 +1,5 @@
 eclipse.preferences.version=1
 encoding//src/com/icodejava/research/nlp/NPTokenizer.java=UTF-8
+encoding//src/com/icodejava/research/nlp/database/ArticlesDB.java=UTF-8
 encoding//src/com/icodejava/research/nlp/text_corpus/nepali_sambidhan_sabha_word_frequency.txt=UTF-8
+encoding//src/com/icodejava/research/nlp/utils/PreetiUnicodeMapping.java=UTF-8

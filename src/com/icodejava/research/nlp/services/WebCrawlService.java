@@ -1,0 +1,82 @@
+package com.icodejava.research.nlp.services;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import com.icodejava.research.nlp.database.ArticlesDB;
+import com.icodejava.research.nlp.database.WebsitesDB;
+
+public class WebCrawlService {
+	public static final int LIMIT_FROM_EACH_DOMAIN=200;
+	public static void main (String args []) {
+		//fetchURLs(1);
+		crawlSites(LIMIT_FROM_EACH_DOMAIN);
+		//crawl("http://www.samakalinsahitya.com/index.php?show=detail&art_id=100");
+	}
+
+	public static void crawlSites(final int limitForEachDomain) {
+		//Fetch 10 urls from each domain that are not crawled
+		List<String> sitesToCrawl = fetchURLs(limitForEachDomain);
+		
+		
+		for(String site: sitesToCrawl) {
+			
+			try {
+
+				long start = System.currentTimeMillis();
+				crawl(site);
+				long end = System.currentTimeMillis();
+				
+				System.out.println("Crawling site "  + site + " took " + (end-start)/100 + "ms");
+				
+				Thread.sleep(5000); //Sleep 5 Seconds
+				
+			} catch (Exception e) {
+				System.out.println("Error Occurred while crawling "  + site);
+				
+			}
+		}
+		
+	}
+
+	public static void crawl(String site) {
+
+		Document doc;
+		try{ 
+			doc = Jsoup.connect(site).userAgent("Mozilla").get();
+		} catch (Exception e) {
+			System.out.println("Could not crawl " + site + "\n" + e.getMessage() );
+			return;
+		}
+		
+		int siteID = WebsitesDB.getSiteID(site);
+		
+		//return doc.body().text();
+
+		if(siteID > 0) {
+			ArticlesDB.insertArticles(siteID, doc.html(), doc.body().text(), doc.title());
+		} else {
+			System.out.println("Crawled the website, but no site id found. Did not insert the articles to the datbase" );
+		}
+		
+		WebsitesDB.updateSiteCrawledDate(siteID);
+		
+	}
+
+	private static List<String> fetchURLs(int limitForEachDomain) {
+		List<String> domains = WebsitesDB.selectDistinctDomains();
+		System.out.println("Fetched: " +  domains.size() + " Domains");
+		List<String> urls = new ArrayList<String>();
+		for(String domain: domains) {
+			urls.addAll(WebsitesDB.selectUncrawledWebsites(domain, limitForEachDomain));
+		}
+		
+		System.out.println("Fetched: " +  urls.size() + " URLs");
+		
+		return urls;
+	}
+
+}

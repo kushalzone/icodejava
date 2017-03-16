@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.icodejava.blog.published.utilities.FileUtilities;
+import com.icodejava.research.nlp.database.ArticlesDB;
 
 
 public class NPTokenizer {
@@ -24,7 +25,9 @@ public class NPTokenizer {
 
     public static void main(String args[]) throws FileNotFoundException, IOException {
 
-        String text = new String(FileUtilities.loadFile("C:\\Users\\paudyals\\Desktop\\NLP\\nepali_sambidhan.txt"));
+        //String text = new String(FileUtilities.loadFile("C:\\Users\\paudyals\\Desktop\\NLP\\nepali_sambidhan.txt"));
+        
+        String text = ArticlesDB.selectArticleTextByID(7000);
         
     	//String text = HtmlTextExtractor.extractTextFromWeb("http://swasthyakhabar.com/news-details/3110/2017-02-23");
         
@@ -33,7 +36,7 @@ public class NPTokenizer {
         //System.out.println("=====OriginalText=====\n" + text);
 
 //        System.out.println("\n=====TokenizedSentences=====\n");
-  //      tokenizeSentence(text, Terminator.NP);
+        tokenizeSentence(text, Terminator.NP);
 
         //System.out.println("\n=====TokenizedWords=====\n");
         //tokenizeWords(text);
@@ -75,14 +78,14 @@ public class NPTokenizer {
         }
     }
 
-    private static List<String> tokenizeWords(String text) {
+    public static List<String> tokenizeWords(String text) {
 
         List<String> words = new ArrayList<String>();
         StringTokenizer tokenizer = new StringTokenizer(text);
 
         while (tokenizer.hasMoreElements()) {
 
-            String token = cleanToken(tokenizer.nextToken());
+            String token = cleanWordToken(tokenizer.nextToken());
 
             if (token.length() > 0) {
                 words.add(token);
@@ -93,7 +96,7 @@ public class NPTokenizer {
         return words;
     }
 
-    private static String cleanToken(String nextToken) {
+    public static String cleanWordToken(String nextToken) {
 
         nextToken = nextToken.trim();
         nextToken = nextToken.replaceAll(",", "");
@@ -101,8 +104,26 @@ public class NPTokenizer {
         nextToken = nextToken.replaceAll("‘", "");
         nextToken = nextToken.replaceAll("’", "");
         nextToken = nextToken.replaceAll("\\?", "");
-        nextToken = nextToken.replaceAll("[a-zA-Z0-9]", "");//remove english characters
-        nextToken = nextToken.replaceAll("  ", " ");
+        nextToken = nextToken.replaceAll("^[a-zA-Z0-9]*$", "");//remove english characters
+        nextToken = nextToken.replaceAll(" ", " ");
+        nextToken = nextToken.replaceAll(":", "");
+        nextToken = nextToken.replaceAll("\\(", "");
+        nextToken = nextToken.replaceAll("\\)", "");
+        nextToken = nextToken.replaceAll("\\[", "");
+        nextToken = nextToken.replaceAll("\\]", "");
+        nextToken = nextToken.replaceAll("\\{", "");
+        nextToken = nextToken.replaceAll("\\}", "");
+        nextToken = nextToken.replaceAll("\\'", "");
+        nextToken = nextToken.replaceAll("\"", "");
+        nextToken = nextToken.replaceAll("। ", "");
+        nextToken = nextToken.replaceAll("!", "");
+        nextToken = nextToken.replaceAll("@", "");
+        
+        //nextToken.replaceAll("[a-zA-Z0-9?><;,{}[\\]\\-_+=!@#$%\\^&*|']*", "");
+        
+        
+        
+        
 
         return nextToken;
     }
@@ -110,8 +131,9 @@ public class NPTokenizer {
     private static String cleanSentence(String sentence) {
 
         sentence = sentence.trim();
-        sentence = sentence.replaceAll("  ", " ");
-
+        sentence = sentence.replaceAll("  ", " ").replaceAll("  ", " ");
+        //sentence = sentence.replaceAll("^[a-zA-Z0-9]*$", "");//remove english characters
+        
         return sentence;
     }
 
@@ -209,7 +231,7 @@ public class NPTokenizer {
     }
 
     private enum Terminator {
-        NP("।"), EN(".");
+        NP("।?!"), EN(".");
 
         private String sentenceTerminator;
 

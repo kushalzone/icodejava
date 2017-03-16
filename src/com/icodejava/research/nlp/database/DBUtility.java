@@ -11,7 +11,7 @@ import java.sql.Statement;
 *
 * @author sqlitetutorial.net
 */
-public class DatabaseUtility {
+public class DBUtility {
 
     public static final String DATABASE_URL = "jdbc:sqlite:C:/Users/paudyals/Desktop/NLP/nlpdb/npl2.db";
 
@@ -36,12 +36,34 @@ public class DatabaseUtility {
             System.out.println(e.getMessage());
         }
     }
+    
+    public static void createNewDatabase(String databaseURL) throws ClassNotFoundException {
+    	
+    	Class.forName("org.sqlite.JDBC");
+
+        try (Connection conn = DriverManager.getConnection(databaseURL)) {
+            if (conn != null) {
+                DatabaseMetaData meta = conn.getMetaData();
+                System.out.println("The driver name is " + meta.getDriverName());
+                System.out.println("A new database has been created.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 
     public static void createNewTable(String sql) {
+    	
+    	createNewTable(DATABASE_URL, sql);
+
+    }
+    
+    public static void createNewTable(String databaseURL, String sql) {
 
 
-        try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+        try (Connection conn = DriverManager.getConnection(databaseURL);
                 Statement stmt = conn.createStatement()) {
             // create a new table
             //System.out.println("SQL to create new table\n" + sql );
@@ -60,12 +82,22 @@ public class DatabaseUtility {
 
 	public static void deleteAllRecords(String tableName) {
 		
+		deleteAllRecords(DATABASE_URL, tableName);
+	
+	}
+	
+	public static void deleteAllRecords(String databaseURL, String tableName) {
+		
 		 String sql = "DELETE FROM " + tableName;
 		 
-	     try (Connection conn = DriverManager. getConnection(DATABASE_URL);
+	     try (Connection conn = DriverManager. getConnection(databaseURL);
 	             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 	
-	         pstmt.executeUpdate();
+	         int result = pstmt.executeUpdate();
+	         
+	         if(result > 0) {
+	        	 System.out.println("Records Deleted Successfully");
+	         }
 	
 	     } catch (SQLException e) {
 	         System.out.println(e.getMessage());
@@ -74,15 +106,19 @@ public class DatabaseUtility {
 	}
 	
     public static int getRowCount(String table){
+    	return getRowCount(DATABASE_URL, table);
+    }
+    
+    public static int getRowCount(String databseUrl, String table){
     	int rowCount = 0;
         String sql = "SELECT count(*) FROM "+ table;
 
-        try (Connection conn = DriverManager.getConnection( DATABASE_URL);
+        try (Connection conn = DriverManager.getConnection( databseUrl);
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
 
             if (rs.next()) {
-                System. out.println("\n=================\nTotal Row Count in "+table+" table " + (rowCount = rs.getInt(1)));
+                System. out.println("\n=================\nTotal Row Count in "+table+" table " + (rowCount = rs.getInt(1))+"\n=================");
             }
         } catch (SQLException e) {
             System. out.println(e.getMessage());
@@ -90,6 +126,7 @@ public class DatabaseUtility {
         
         return rowCount;
     }
+
 
 
 }

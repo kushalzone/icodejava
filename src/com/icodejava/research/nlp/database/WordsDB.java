@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 
-public class WordsDB extends DatabaseUtility{
+public class WordsDB extends DBUtility{
 	/**
 	 * ID
 	 * SENTENCE_ID

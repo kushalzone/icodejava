@@ -6,9 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
-public class WebsitesDB extends DatabaseUtility {
+public class WebsitesDB extends DBUtility {
 
 	/*
 	 * ID
@@ -28,8 +30,9 @@ public class WebsitesDB extends DatabaseUtility {
 		// insertWebsite("http://www.sanjaal.com/",
 		// "http://www.sanjaal.com/test/test.php");
 		// selectAllWebsites();
-		 selectUncrawledWebsites("http://www.mysansar.com", 10);
-		
+		 // selectUncrawledWebsites("http://www.mysansar.com", 10);
+		//selectDistinctDomains();
+		//updateSiteCrawledDate(-1);
 
 	}
 
@@ -39,6 +42,25 @@ public class WebsitesDB extends DatabaseUtility {
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
+			
+			System.out.println("\n==============================");
+
+			while (rs.next()) {
+				System.out.println(rs.getString(1) +" ("+rs.getInt(2)+")");
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public static void printRowCountByDomainUncrawled() {
+		String sql = "SELECT DOMAIN, COUNT(*) FROM WEBSITES WHERE CRAWLED_DATE IS NULL GROUP BY DOMAIN ORDER BY 2 DESC";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			
+			System.out.println("\n==============================");
 
 			while (rs.next()) {
 				System.out.println(rs.getString(1) +" ("+rs.getInt(2)+")");
@@ -156,20 +178,66 @@ public class WebsitesDB extends DatabaseUtility {
 		}
 	}
 	
-	public static void selectUncrawledWebsites(String domain, int howMany) {
-		String sql = "SELECT * FROM WEBSITES WHERE DOMAIN=\""+domain+"\" LIMIT " + howMany;
+	
+	public static List<String> selectDistinctDomains() {
+		String sql = "SELECT DISTINCT DOMAIN FROM WEBSITES";
+		
+		List<String> domains = new ArrayList<String>();
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
 
 			while (rs.next()) {
-				System.out.println(rs.getInt("ID") + "\t" + rs.getString("DOMAIN") + "\t" + rs.getString("URL") + "\t"
-						+ rs.getString("CREATED_DATE") +"\t" +  rs.getString("CRAWLED_DATE"));
+				domains.add(rs.getString("DOMAIN"));
+				//System.out.println(rs.getString("DOMAIN"));
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		return domains;
+	}
+	
+
+	
+	public static List<String> selectUncrawledWebsites(String domain, int howMany) {
+		String sql = "SELECT URL FROM WEBSITES WHERE DOMAIN=\""+domain+"\" AND CRAWLED_DATE IS NULL LIMIT " + howMany;
+		
+		List<String> urls = new ArrayList<String>();
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				System.out.println(rs.getString("URL"));
+				
+				//System.out.println(rs.getInt("ID") + "\t" + rs.getString("DOMAIN") + "\t" + rs.getString("URL") + "\t" + rs.getString("CREATED_DATE") +"\t" +  rs.getString("CRAWLED_DATE"));
+				urls.add(rs.getString("URL"));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return urls;
+	}
+	
+	public static int getSiteID(String site) {
+		int siteId = -1;
+		String sql = "SELECT ID FROM WEBSITES WHERE URL = \"" + site +"\"";
+		
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			if (rs.next()) {
+				siteId = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return siteId;
 	}
 	
 	
@@ -193,5 +261,63 @@ public class WebsitesDB extends DatabaseUtility {
 
 		return alreadyExists;
 	}
+
+	public static void updateSiteCrawledDate(int siteID) {
+		String sql = "UPDATE WEBSITES SET CRAWLED_DATE=\""+ new java.sql.Date(Calendar.getInstance().getTime().getTime()) +"\"WHERE ID=" + siteID + "";
+		System.out.println(sql);
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			int result  = pstmt.executeUpdate();
+
+			
+			if(result > 0) {
+			
+				System.out.println("Successfully Updated Crawled Date On site ID" + siteID );
+			}
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		
+	}
+
+	public static void printCrawledSitesCount() {
+		String sql = "SELECT COUNT(*) FROM WEBSITES WHERE CRAWLED_DATE IS NOT NULL";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			
+
+			if (rs.next()) {
+				System.out.println("Crawled Sites Count: " + rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+	}
+
+	public static void printUncrawledSitesCount() {
+		String sql = "SELECT COUNT(*) FROM WEBSITES WHERE CRAWLED_DATE IS NULL";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			
+
+			if (rs.next()) {
+				System.out.println("Uncrawled Sites Count: " + rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+	}
+
+
 
 }
