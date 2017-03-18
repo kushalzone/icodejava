@@ -38,6 +38,9 @@ public class UnreferencedWordsService {
 			
 		}
 		
+		//do a second round of cleaning
+		WordsUnreferencedDB.cleanStrangeWords();
+		
 		//finally print report
 		ReportingService.printUnreferencedWordReport();
 		

@@ -25,9 +25,9 @@ public class ArticlesDB extends DBUtility {
     public static void main(String[] args) throws ClassNotFoundException {
     	//createArticlesTable();
     	//selectAllArticles();
-    	//selectArticleByID(4);
+    	selectArticleByID(4);
     	//selectDistinctTitles();
-    	selectArticlesCountProcessedForUnreferenceWord();
+    	//selectArticlesCountProcessedForUnreferenceWord();
     }
 	
 	

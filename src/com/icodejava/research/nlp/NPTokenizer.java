@@ -99,31 +99,11 @@ public class NPTokenizer {
     public static String cleanWordToken(String nextToken) {
 
         nextToken = nextToken.trim();
-        nextToken = nextToken.replaceAll(",", "");
-        nextToken = nextToken.replaceAll("\\.", "");
-        nextToken = nextToken.replaceAll("‘", "");
-        nextToken = nextToken.replaceAll("’", "");
-        nextToken = nextToken.replaceAll("\\?", "");
-        nextToken = nextToken.replaceAll("^[a-zA-Z0-9]*$", "");//remove english characters
-        nextToken = nextToken.replaceAll(" ", " ");
-        nextToken = nextToken.replaceAll(":", "");
-        nextToken = nextToken.replaceAll("\\(", "");
-        nextToken = nextToken.replaceAll("\\)", "");
-        nextToken = nextToken.replaceAll("\\[", "");
-        nextToken = nextToken.replaceAll("\\]", "");
-        nextToken = nextToken.replaceAll("\\{", "");
-        nextToken = nextToken.replaceAll("\\}", "");
-        nextToken = nextToken.replaceAll("\\'", "");
-        nextToken = nextToken.replaceAll("\"", "");
-        nextToken = nextToken.replaceAll("। ", "");
-        nextToken = nextToken.replaceAll("!", "");
-        nextToken = nextToken.replaceAll("@", "");
+        nextToken = nextToken.replaceAll("[००–-—-…_a-zA-Z0-9@#&\\$%:,;=->~“”‘’!। ||/\\+\\^\\*\\'\"\\.`\\(\\)\\[\\]\\{\\}\\.\\?\\\\]*", "");
+        nextToken = nextToken.replaceAll(" ", "");//spaces
+        nextToken = nextToken.replaceAll("[०-९]", ""); //remove nepali numbers
         
         //nextToken.replaceAll("[a-zA-Z0-9?><;,{}[\\]\\-_+=!@#$%\\^&*|']*", "");
-        
-        
-        
-        
 
         return nextToken;
     }

@@ -1,6 +1,7 @@
 package com.icodejava.research.nlp.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -10,36 +11,50 @@ import com.icodejava.research.nlp.database.ArticlesDB;
 import com.icodejava.research.nlp.database.WebsitesDB;
 
 public class WebCrawlService {
-	public static final int LIMIT_FROM_EACH_DOMAIN=200;
+	public static final int LIMIT_FROM_EACH_DOMAIN=100;
 	public static void main (String args []) {
 		//fetchURLs(1);
 		crawlSites(LIMIT_FROM_EACH_DOMAIN);
+		//crawlSitesForDomain("http://www.samakalinsahitya.com");
 		//crawl("http://www.samakalinsahitya.com/index.php?show=detail&art_id=100");
+	}
+
+	private static void crawlSitesForDomain(String domain) {
+		for(String site: fetchURLsForDomain(domain, LIMIT_FROM_EACH_DOMAIN)) {
+			startCrawl(site);
+		}
 	}
 
 	public static void crawlSites(final int limitForEachDomain) {
 		//Fetch 10 urls from each domain that are not crawled
 		List<String> sitesToCrawl = fetchURLs(limitForEachDomain);
 		
+		//Randomize URL order so we go to random domains from the list
+		Collections.shuffle(sitesToCrawl);
 		
+		int count = 0;
 		for(String site: sitesToCrawl) {
-			
-			try {
-
-				long start = System.currentTimeMillis();
-				crawl(site);
-				long end = System.currentTimeMillis();
-				
-				System.out.println("Crawling site "  + site + " took " + (end-start)/100 + "ms");
-				
-				Thread.sleep(5000); //Sleep 5 Seconds
-				
-			} catch (Exception e) {
-				System.out.println("Error Occurred while crawling "  + site);
-				
-			}
+			System.out.println("Crawling: " + count++ +" of " + sitesToCrawl.size());
+			startCrawl(site);
 		}
 		
+	}
+
+	private static void startCrawl(String site) {
+		try {
+
+			long start = System.currentTimeMillis();
+			crawl(site);
+			long end = System.currentTimeMillis();
+			
+			System.out.println("Crawling site "  + site + " took " + (end-start)/100 + "ms");
+			
+			Thread.sleep(3000); //Sleep 5 Seconds
+			
+		} catch (Exception e) {
+			System.out.println("Error Occurred while crawling "  + site);
+			
+		}
 	}
 
 	public static void crawl(String site) {
@@ -77,6 +92,11 @@ public class WebCrawlService {
 		System.out.println("Fetched: " +  urls.size() + " URLs");
 		
 		return urls;
+	}
+	
+	private static List<String> fetchURLsForDomain(String domain, int limitForEachDomain) {
+		
+		return WebsitesDB.selectUncrawledWebsites(domain, limitForEachDomain);
 	}
 
 }
