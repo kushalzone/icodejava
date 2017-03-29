@@ -263,7 +263,7 @@ public class WebsitesDB extends DBUtility {
 	}
 
 	public static void updateSiteCrawledDate(int siteID) {
-		String sql = "UPDATE WEBSITES SET CRAWLED_DATE=\""+ new java.sql.Date(Calendar.getInstance().getTime().getTime()) +"\"WHERE ID=" + siteID + "";
+		String sql = "UPDATE WEBSITES SET CRAWLED_DATE=\""+ new java.sql.Date(Calendar.getInstance().getTime().getTime()) +"\" WHERE ID=" + siteID + "";
 		System.out.println(sql);
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
