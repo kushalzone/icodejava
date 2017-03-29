@@ -1,5 +1,12 @@
 eclipse.preferences.version=1
 encoding//src/com/icodejava/research/nlp/NPTokenizer.java=UTF-8
+encoding//src/com/icodejava/research/nlp/data/classifier/days_of_week.txt=UTF-8
+encoding//src/com/icodejava/research/nlp/data/classifier/months.txt=UTF-8
 encoding//src/com/icodejava/research/nlp/database/ArticlesDB.java=UTF-8
+encoding//src/com/icodejava/research/nlp/database/Grammar.java=UTF-8
+encoding//src/com/icodejava/research/nlp/test/NPTokenizerTest.java=UTF-8
+encoding//src/com/icodejava/research/nlp/test/bad_examples.txt=UTF-8
 encoding//src/com/icodejava/research/nlp/text_corpus/nepali_sambidhan_sabha_word_frequency.txt=UTF-8
+encoding//src/com/icodejava/research/nlp/utils/DevanagariUnicodeToRomanEnglish.java=UTF-8
+encoding//src/com/icodejava/research/nlp/utils/GeneralTool.java=UTF-8
 encoding//src/com/icodejava/research/nlp/utils/PreetiUnicodeMapping.java=UTF-8
