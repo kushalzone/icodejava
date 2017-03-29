@@ -14,7 +14,7 @@ public class UnreferencedWordsService {
 	}
 
 	private static void processUnreferencedWords(int articleLimit) {
-		List<Integer> unprocessedArticlesID =  ArticlesDB.selectArticlesUnProcessed(articleLimit);
+		List<Integer> unprocessedArticlesID =  ArticlesDB.selectArticlesUnProcessedWords(articleLimit);
 
 		int processing = 0;
 		for(Integer id: unprocessedArticlesID) {
