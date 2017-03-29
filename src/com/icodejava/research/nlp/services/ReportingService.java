@@ -18,6 +18,9 @@ public class ReportingService {
 		WebsitesDB.printRowCountByDomainUncrawled();
 		
 		printUnreferencedWordReport();
+		printUnreferencedSentenceReport();
+		
+		printArticleTitleInfo();
 	}
 	
 	
@@ -27,6 +30,19 @@ public class ReportingService {
 		ArticlesDB.selectArticlesCountProcessedForUnreferenceWord();
 		WordsUnreferencedDB.getRowCount(WordsUnreferencedDB.DATABASE_URL,Tables.WORDS_UNREFERENCED);
 		
+	}
+	
+	public static void printUnreferencedSentenceReport() {
+		System.out.println("========================================");
+		ArticlesDB.selectArticlesCount();
+		ArticlesDB.selectArticlesCountProcessedForUnreferenceSentence();
+		WordsUnreferencedDB.getRowCount(WordsUnreferencedDB.DATABASE_URL,Tables.WORDS_UNREFERENCED);
+		
+	}
+	
+	public static void printArticleTitleInfo() {
+		ArticlesDB.selectArticlesWithTitlesCount();
+		ArticlesDB.selectArticlesWithoutTitlesCount();
 	}
 
 }
