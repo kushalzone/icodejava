@@ -1,9 +1,12 @@
 package com.icodejava.research.nlp.domain;
-
+/**
+ * Represents single word object. Word could be atomic or molecular as long as it is a single word.
+ */
 public class Word {
 
 	private int id;
 	private String word;
+	private String value_romanized;
 	private String verified;
 	private boolean modified;
 
@@ -30,6 +33,14 @@ public class Word {
 		this.word = word;
 	}
 
+	public String getValue_romanized() {
+		return value_romanized;
+	}
+
+	public void setValue_romanized(String value_romanized) {
+		this.value_romanized = value_romanized;
+	}
+
 	public String getVerified() {
 		return verified;
 	}
@@ -37,7 +48,7 @@ public class Word {
 	public void setVerified(String verified) {
 		this.verified = verified;
 	}
-	
+
 	public boolean isModified() {
 		return modified;
 	}
