@@ -9,6 +9,7 @@ public enum Tags {
 	LOCATION("LOCATION", "Thaun", "ठाउँ"), 
 	PERSON("PERSON", "Byakti", "व्यक्ति"),
 	MONTH("MONTH", "Mahina", "महिना");
+	
 
 	private String tagNepali;
 
