@@ -2,6 +2,10 @@ package com.icodejava.research.nlp.domain;
 
 public class Grammar {
 
+	public static final String LETTERS="कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहक्षत्रज्ञअआइईउऊएऐओऔअंअ:";
+	public static final String NUMBERS="१२३४५६७८९०";
+	public static final String [] COMPOUND_WORD_ENDING = new String [] {"लाई","लाइ","बाट","वाट","द्वारा","बारे","वारे","माथि","माथी","ले","का","को","सम्म","तिर","तीर","संग","सँग", "सङ्ग", "समक्ष","मै","झैं","स्थित"};
+	//Compound words: Bare, Lai, Le, Ka, Ko, Tira, Dwara, Dekhi, Haru, Haruko, Harule, Harulai, SammaKo, Sanga, Sthit, Madhya, Madhye Ma, Samakshya, Pachhi, sanga, Mai, Jhain
 
 	/**
 	 * Terms that give attributes to nouns, extending their definitions.
