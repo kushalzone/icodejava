@@ -11,7 +11,7 @@ http://bizmandu.com
 http://eadarsha.com
 http://gorkhapatraonline.com
 http://himalkhabar.com
-http://kantipur.ekantipur.com
+	http://kantipur.ekantipur.com
 http://livingwithict.com
 http://Lokaantar.com
 http://Medianp.com
@@ -40,7 +40,6 @@ http://www.clickmandu.com
 http://www.dainiknepal.com
 http://www.ebaglung.com
 http://www.janapukar.com
-http://www.kantipur.com
 http://www.kathmandutoday.com
 http://www.majheri.com
 http://www.merolagani.com
@@ -66,3 +65,4 @@ http://kantipur.ekantipur.com
 http://KathmanduToday.com
 http://Merolagani.com
 http://www.aarthiknews.com
+http://www.yeskathmandu.com
