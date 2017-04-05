@@ -9,18 +9,32 @@ public class ReportingService {
 	
 	public static void main (String args []) {
 		
-		WebsitesDB.printRowCountByDomain();
-		WebsitesDB.getRowCount(Tables.WEBSITES);
-		
-		WebsitesDB.printCrawledSitesCount();
-		WebsitesDB.printUncrawledSitesCount();
-		
-		WebsitesDB.printRowCountByDomainUncrawled();
-		
+		printRowCountStatus();
+		printCrawlStatus();
 		printUnreferencedWordReport();
 		printUnreferencedSentenceReport();
-		
 		printArticleTitleInfo();
+		
+		printCompoundWords();
+	}
+
+
+	private static void printCompoundWords() {
+		WordsUnreferencedService.printCompoundWords();
+		
+	}
+
+
+	public static void printCrawlStatus() {
+		WebsitesDB.printCrawledSitesCount();
+		WebsitesDB.printUncrawledSitesCount();
+		WebsitesDB.printRowCountByDomainUncrawled();
+	}
+
+
+	public static void printRowCountStatus() {
+		WebsitesDB.printRowCountByDomain();
+		WebsitesDB.getRowCount(Tables.WEBSITES);
 	}
 	
 	
@@ -43,6 +57,7 @@ public class ReportingService {
 	public static void printArticleTitleInfo() {
 		ArticlesDB.selectArticlesWithTitlesCount();
 		ArticlesDB.selectArticlesWithoutTitlesCount();
+		ArticlesDB.selectTitlesMarkedAsClean_count();
 	}
 
 }
