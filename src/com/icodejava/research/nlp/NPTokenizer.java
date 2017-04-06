@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import com.icodejava.blog.published.utilities.FileUtilities;
-import com.icodejava.research.nlp.database.ArticlesDB;
+import com.icodejava.research.nlp.domain.Grammar;
+import com.icodejava.research.nlp.domain.WordFrequency;
 
 
 public class NPTokenizer {
@@ -27,16 +27,16 @@ public class NPTokenizer {
 
         //String text = new String(FileUtilities.loadFile("C:\\Users\\paudyals\\Desktop\\NLP\\nepali_sambidhan.txt"));
         
-        String text = ArticlesDB.selectArticleTextByID(7000);
+        //String text = ArticlesDB.selectArticleTextByID(7000);
         
-    	//String text = HtmlTextExtractor.extractTextFromWeb("http://swasthyakhabar.com/news-details/3110/2017-02-23");
+    	String text = HtmlTextExtractor.extractTextFromWeb("http://www.hongkongnepali.com/2008-12-29-07-00-23/9088-2011-10-04-17-26-34.html");
         
 
         
         //System.out.println("=====OriginalText=====\n" + text);
 
 //        System.out.println("\n=====TokenizedSentences=====\n");
-        tokenizeSentence(text, Terminator.NP);
+        //tokenizeSentence(text, Terminator.NP);
 
         //System.out.println("\n=====TokenizedWords=====\n");
         //tokenizeWords(text);
@@ -57,11 +57,10 @@ public class NPTokenizer {
      * @param text
      * @param langTerminator
      */
-    private static void tokenizeSentence(String text, Terminator langTerminator) {
+    public static List<String> tokenizeSentence(String text, Terminator langTerminator) {
 
         List<String> sentences = new ArrayList<String>();
-        StringTokenizer tokenizer = new StringTokenizer(text,
-                langTerminator.getSentenceTerminator());
+        StringTokenizer tokenizer = new StringTokenizer(text,langTerminator.getSentenceTerminator());
 
         while (tokenizer.hasMoreElements()) {
 
@@ -76,6 +75,8 @@ public class NPTokenizer {
                 //extractAdjancentWords(AdjacentWords.THREE_WORDS.getDepth(), token.trim()); // TODO: Remove or improve
             }
         }
+        
+        return sentences;
     }
 
     public static List<String> tokenizeWords(String text) {
@@ -96,26 +97,59 @@ public class NPTokenizer {
         return words;
     }
 
-    public static String cleanWordToken(String nextToken) {
+    public static String cleanWordToken(String word) {
 
-        nextToken = nextToken.trim();
-        nextToken = nextToken.replaceAll("[००–-—-…_a-zA-Z0-9@#&\\$%:,;=->~“”‘’!। ||/\\+\\^\\*\\'\"\\.`\\(\\)\\[\\]\\{\\}\\.\\?\\\\]*", "");
-        nextToken = nextToken.replaceAll(" ", "");//spaces
-        nextToken = nextToken.replaceAll("[०-९]", ""); //remove nepali numbers
+        word = word.trim();
+        word = word.replace("\u00A0",""); //remove non breaking spaces
+        word = word.trim().replaceAll("( )+", " ");//remove multiple spaces
+        word = word.replaceAll("[\t००–-—-…_a-zA-Z0-9@#&\\$%:,;=->~“”‘’!। ||/\\+\\^\\*\\'\"\\.`\\(\\)\\[\\]\\{\\}\\.\\?\\\\]*", "");
+        word = word.replaceAll("[०-९]", ""); //remove nepali numbers
+        word = word.replaceAll("¥", "र्");
         
-        //nextToken.replaceAll("[a-zA-Z0-9?><;,{}[\\]\\-_+=!@#$%\\^&*|']*", "");
+		if ("÷".equalsIgnoreCase(word)) {
+			word = "";
+		} else if (word.indexOf("÷") == 0) {
+			word = word.substring(1);//e.g. ÷अनौपचारिक > अनौपचारिक 
+		} else {
+			word = word.replaceAll("÷", "/"); //e.g. औपचारिक÷अनौपचारिक > औपचारिक/अनौपचारिक
 
-        return nextToken;
+		}
+        
+        word = fixMalformedWord(word);
+
+        return word;
     }
     
-    private static String cleanSentence(String sentence) {
+    public static String cleanSentence(String sentence) {
+    	
+    	if(sentence ==  null) {
+    		return null;
+    	}
 
         sentence = sentence.trim();
-        sentence = sentence.replaceAll("  ", " ").replaceAll("  ", " ");
-        //sentence = sentence.replaceAll("^[a-zA-Z0-9]*$", "");//remove english characters
+        sentence = sentence.replace("\u00A0",""); //remove non breaking spaces
+        sentence = sentence.trim().replaceAll("( )+", " ");//remove multiple spaces
         
+        //sentence = sentence.replaceAll("  ", " ").replaceAll("  ", " ");
+        sentence = sentence.replaceAll("[a-zA-Z0-9][,.%;:]{0,}", "");//remove english characters. Removes comma appearing with english text, but not nepali text
+        sentence = sentence.replaceAll("\t", " ");
+        sentence = sentence.replaceAll("#", "");
+        sentence = sentence.replaceAll("@", "");
+        sentence = sentence.replaceAll("\"", "");
+        sentence = sentence.replaceAll("\'", "");
+        sentence = sentence.trim();
+        
+        //sentence = sentence.replaceAll("\n", "");
         return sentence;
     }
+    
+	public static String cleanTitles(String title) {
+		title = title.trim();
+		//title = title.replaceAll("  ", " ").replaceAll(" ", ""); //do it twice
+		title = title.replaceAll("[००–-—-…_a-zA-Z0-9@#&\\$%||/\\+\\^\\*\\.]*", "");
+		title=title.trim();
+		return title;
+	}
 
     /**
      * Given a sentence, this method will return a collection of n (i.e. level) adjacent words
@@ -210,8 +244,8 @@ public class NPTokenizer {
 
     }
 
-    private enum Terminator {
-        NP("।?!"), EN(".");
+    public static enum Terminator {
+        NP("।?!|"), EN(".");
 
         private String sentenceTerminator;
 
@@ -243,6 +277,81 @@ public class NPTokenizer {
             return depth;
         }
     }
+    
+    public static void printChracters (String str) {
+    	if(str == null) {
+    		return;
+    	}
+    	
+    	for(Character c: str.toCharArray()) {
+    		System.out.println((c + " " + (int) c));
+    	}
+    }
+
+
+	
+	public static String fixMalformedWord(String string) {
+		/*System.out.println(string + " " + string.length());
+		NPTokenizer.printChracters(string);
+		*/
+		if(string.indexOf('ि') == 0 && string.length() > 1) {
+			System.out.println("Fixing: " + string);
+			string=swap(string, 0,1);
+			System.out.println("Fixed: " + string);
+		}
+		
+		string = string.replaceAll("अो", "ओ");
+		
+		
+		//System.out.println(string + " " + string.length());
+		//NPTokenizer.printChracters(string);
+		return string;
+	}
+	
+	/**
+	 * Swaps two characters in a given string. 
+	 * @param String
+	 * @param firstIndex
+	 * @param secondIndex
+	 * @return
+	 */
+	public static String swap(String s, int firstIndex, int secondIndex) {
+		String s1 = s.substring(0, firstIndex);
+		String s2 = s.substring(firstIndex + 1, secondIndex);
+		String s3 = s.substring(secondIndex + 1);
+		return s1 + s.charAt(secondIndex) + s2 + s.charAt(firstIndex) + s3;
+	}
+
+	/**
+	 * Detects Grammatically incorrect Nepali Words
+	 * @param string
+	 * @return
+	 */
+	public static boolean isMalformedWord(String string) {
+
+		int malformedCount = 0;
+		boolean isMalformed = false;
+		for(Character c: string.toCharArray()) {
+			
+			if(Grammar.isMatra(c)) {
+				malformedCount+=1;
+			} else {
+				malformedCount=0; //reset
+			}
+			
+			if(malformedCount>=3) {
+				isMalformed = true;
+				break;
+			}
+		}
+		System.out.println("isMalformed? " + isMalformed);
+		return isMalformed;
+		
+	}
+	
+
+
+
 
 
 }

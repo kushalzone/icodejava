@@ -1,6 +1,6 @@
 package com.icodejava.research.nlp.database;
 
-public class LinkedWordsUnreferencedDB extends DBUtility {
+public class WordsLinkedUnreferencedDB extends DBUtility {
 	
 	/*
 	 * ID

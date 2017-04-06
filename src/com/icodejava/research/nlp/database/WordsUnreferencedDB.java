@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.icodejava.research.nlp.NPTokenizer;
+import com.icodejava.research.nlp.domain.Grammar;
 import com.icodejava.research.nlp.domain.Word;
 
 public class WordsUnreferencedDB extends DBUtility {
@@ -32,23 +33,50 @@ public class WordsUnreferencedDB extends DBUtility {
 		//selectRecordsBetweenIds(0, 50000);
 		//selectRecordCountByLength();
 		
-		//selectWordWithLengthGreaterThan(24);
+		selectWordWithLengthGreaterThan(20);
 		//selectWordWithLengthEqualTo(3);
 		
 		//cleanWords();
 		//cleanStrangeWords();
 		
-		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%�%'");
+		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%à%'");
+		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word = '÷'");
 		
-		selectWithQuery("SELECT COUNT (DISTINCT WORD) FROM " + Tables.WORDS_UNREFERENCED);
+		//selectWithQuery("SELECT COUNT (DISTINCT WORD) FROM " + Tables.WORDS_UNREFERENCED);
+		
+		//selectCompoundWords("लाई");
 		
 	}
 	
 	public static void createWordsUnreferencedTable() {
-		String sql = "CREATE TABLE IF NOT EXISTS "+ Tables.WORDS_UNREFERENCED +" (\n" + " ID integer PRIMARY KEY AUTOINCREMENT,\n"
-				 + " WORD text NOT NULL,\n" 
-				 + " WORD_ROMANIZED text,\n" 
-				 + " VERIFIED CHAR(1)\n" + ");";
+		/**
+		 * CREATE TABLE `WORDS_UNREFERENCED` (
+				`ID`	integer PRIMARY KEY AUTOINCREMENT,
+				`WORD`	text NOT NULL,
+				`WORD_ROMANIZED`	text,
+				`VERIFIED`	CHAR(1),
+				`PART_OF_SPEECH`	TEXT,
+				`CLASSIFICATION_1`	TEXT,
+				`CLASSIFICATION_2`	TEXT,
+				`CLASSIFICATION_3`	TEXT,
+				`CLASSIFICATION_4`	TEXT,
+				`CLASSIFICATION_5`	TEXT
+			);
+		 */
+		
+		String sql = "CREATE TABLE IF NOT EXISTS "+ Tables.WORDS_UNREFERENCED +" (\n" 
+					 + " ID integer PRIMARY KEY AUTOINCREMENT,\n"
+					 + " WORD text NOT NULL,\n" 
+					 + " WORD_ROMANIZED text,\n" 
+					 + " VERIFIED CHAR(1),\n" 
+					 + " PART_OF_SPEECH	TEXT,\n"
+					 + " CLASSIFICATION_1	TEXT,\n"
+					 + " CLASSIFICATION_2	TEXT,\n"
+					 + " CLASSIFICATION_3	TEXT,\n"
+					 + " CLASSIFICATION_4	TEXT,\n"
+					 + " CLASSIFICATION_5	TEXT"
+				 
+				 + ");";
 
 		createNewTable(DATABASE_URL,sql);
 	}
@@ -68,6 +96,46 @@ public class WordsUnreferencedDB extends DBUtility {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+	}
+	
+	public static List<Word> selectRecordsNotMarkedAsCompound() {
+		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE IS_COMPOUND_WORD IS NULL OR IS_COMPOUND_WORD='N' ORDER BY WORD ASC";
+
+		List<Word> words = new ArrayList<Word>();
+		
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				//System.out.println(rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" + rs.getString("VERIFIED"));
+				words.add(new Word(rs.getInt("ID"), rs.getString("WORD"), rs.getString("VERIFIED") ));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return words;
+	}
+	
+	public static List<Word> selectRecordsNotMarkedAsCompound(int limit) {
+		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE IS_COMPOUND_WORD IS NULL OR IS_COMPOUND_WORD='N' ORDER BY WORD ASC LIMIT " + limit ;
+
+		List<Word> words = new ArrayList<Word>();
+		
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				//System.out.println(rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" + rs.getString("VERIFIED"));
+				words.add(new Word(rs.getInt("ID"), rs.getString("WORD"), rs.getString("VERIFIED") ));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return words;
 	}
 	
 	public static List<Word> selectWithQuery(String sql) {
@@ -148,6 +216,82 @@ public class WordsUnreferencedDB extends DBUtility {
 		}
 	}
 	
+	public static List<Word> selectCompoundWords(String endsWith) {
+		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" where WORD LIKE '%"+endsWith+"'";
+
+		List<Word> words = new ArrayList<Word>();
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			
+
+			Word word = null;
+			while (rs.next()) {
+				word = new Word(rs.getInt(1), rs.getString(2), rs.getString(3));
+				//System.out.println(rs.getString(1)+" " + rs.getString(2));
+				words.add(word);
+			}
+			System.out.println("Found: " +  words.size() + " Records ending in --> " + endsWith);
+			//System.out.println(words); //THIS IS CAUSING MEMORY ISSUES
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return words;
+	}
+	
+	/**
+	 * Fetches a list of words ending with endsWith that are not already tagged as compound words
+	 * @param endsWith
+	 * @return
+	 */
+	public static List<Word> selectCompoundWordsNotTagged(String endsWith) {
+		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" where IS_COMPOUND_WORD IS NULL AND WORD LIKE '%"+endsWith+"'";
+
+		List<Word> words = new ArrayList<Word>();
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			
+
+			Word word = null;
+			while (rs.next()) {
+				word = new Word(rs.getInt(1), rs.getString(2), rs.getString(3));
+				//System.out.println(rs.getString(1)+" " + rs.getString(2));
+				words.add(word);
+			}
+			if(words.size() > 0) {
+				System.out.println("Found: " +  words.size() + " Records ending in --> " + endsWith);
+			}
+			//System.out.println(words); //THIS IS CAUSING MEMORY ISSUES
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return words;
+	}
+	
+	
+	public static int selectCompoundWordsTaggedCount() {
+		String sql = "SELECT count(*) FROM " +  Tables.WORDS_UNREFERENCED +" where IS_COMPOUND_WORD=\"Y\"";
+		
+		int count = 0;
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			
+
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return count;
+	}
+	
 	public static void selectRandomRecords(int limit) {
 		
 		 //SELECT * FROM table WHERE id IN (SELECT id FROM table ORDER BY RANDOM() LIMIT x)
@@ -180,6 +324,29 @@ public class WordsUnreferencedDB extends DBUtility {
 			while (rs.next()) {
 				words.add(new Word(rs.getInt("ID"), rs.getString("WORD"), rs.getString("VERIFIED") ));
 				//System.out.println(rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" + rs.getString("VERIFIED"));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return words;
+	}
+	
+	public static List<Word> selectWordsNotRomanized(int limit) {
+		//String sql = "SELECT ID, WORD, VERIFIED FROM " +  Tables.WORDS_UNREFERENCED +" WHERE WORD_ROMANIZED IS NULL ORDER BY WORD ASC LIMIT " + limit +";" ;
+		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE ID IN (SELECT ID FROM " + Tables.WORDS_UNREFERENCED +" WHERE WORD_ROMANIZED IS NULL ORDER BY RANDOM()  LIMIT " + limit + ") ORDER BY WORD ASC";
+		System.out.println(sql);
+
+		List<Word> words = new ArrayList<Word>();
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			
+
+			Word word = null;
+			while (rs.next()) {
+				word = new Word(rs.getInt(1), rs.getString(2), rs.getString(3));
+				words.add(word);
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -263,7 +430,7 @@ public class WordsUnreferencedDB extends DBUtility {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("select seq from sqlite_sequence where name=\"" + Tables.WORDS_UNREFERENCED + "\"");
 
-			//System.out.println("Inserted Record ID: " + (rowID = rs.getInt(1)));
+			System.out.println("Inserted Record ID: " + (rowID = rs.getInt(1)) + " WORD: " + word);
 
 		} catch (Exception e) {
 			//GRACEFUL
@@ -285,7 +452,30 @@ public class WordsUnreferencedDB extends DBUtility {
 			int result = pstmt.executeUpdate();
 
 			if(result > 0) {
-				System.out.println("Successfully updated word");
+				//System.out.println("Successfully updated word");
+			} else {
+				System.out.println("Could not update the word. Make sure the ID exists or there are no other issues");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public static void updateWordTagAsCompound(int id, String isCompoundWord) {
+
+		String sql = "UPDATE " + Tables.WORDS_UNREFERENCED + " SET IS_COMPOUND_WORD=? WHERE ID=?";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, isCompoundWord);
+			pstmt.setInt(2, id);
+			int result = pstmt.executeUpdate();
+
+			if(result > 0) {
+				//System.out.println("Successfully updated word");
 			} else {
 				System.out.println("Could not update the word. Make sure the ID exists or there are no other issues");
 			}
@@ -301,24 +491,56 @@ public class WordsUnreferencedDB extends DBUtility {
 			return;
 		}
 		
+		int count=0;
 		for(Word word:words) {
 			
-			if(word.getWord().trim().length() == 0) {
+			if(count%1000 == 0 ) {
+				System.out.println("UPDATED: "+ count + " of " + words.size());
+			}
+			
+			
+			if(word.getWord().trim().length() == 0 || word.getWord().trim().length() > 24) { //deleting empty and longer sentences
 				deleteRecordsByID(word.getId());
 			} else if (word.isModified()){
 				updateWord(word.getId(), word.getWord());
 			} else {
-				System.out.println("Not Modified " + word );
+				//System.out.println("Not Modified " + word );
 			}
+			
+			count++;
 		}
 		
 		
 
 	}
 	
+	public static void updateWordsMarkAsCompound(List<Word> words) {
+		
+		if(words == null || words.isEmpty()) {
+			return;
+		}
+		
+		int count=0;
+		for(Word word:words) {
+			
+			if(count%1000 == 0 ) {
+				System.out.println("UPDATED: "+ count + " of " + words.size());
+			}
+			if("Y".equalsIgnoreCase(word.getIsCompoundWord())) {
+				updateWordTagAsCompound(word.getId(), "Y");
+				System.out.println("Found compound word " + word);
+			}
+			
+			count++;
+		}
+		
+	}
+	
 	public static void cleanWords() {
 		List<Word> words = selectRecordsBetweenIds(0, 1000000);
-		//List<Word> words = selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%�%'");
+		//List<Word> words = selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%à%'");
+		
+		int count = 0;
 		for(Word word:words) {
 			String current = word.getWord();
 			//System.out.print(word + "\t");
@@ -326,27 +548,49 @@ public class WordsUnreferencedDB extends DBUtility {
 			
 			String cleaned = word.getWord();
 			
+			//System.out.println(word.getId() + " Dirty: " + current + " Cleaned: " + cleaned);
+			
 			if(!current.equalsIgnoreCase(cleaned)) {
 				word.setModified(true);
 			}
+			
+			if(count%1000 == 0 ) {
+				System.out.println("CLEANED: "+ count + " of " + words.size());
+			}
+			
+			count++;
 			
 			//System.out.print(word + "\n");
 		}
 		
 		updateWords(words);
 		
+		
+		
 		cleanStrangeWords();
+		
 		
 		
 	}
 	
 	public static void cleanStrangeWords() {
-		List<Word> words = selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%�%'");
+		List<Word> words = selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%à%'");
 		
 		for (Word word: words){
 			System.out.println(word);
 			deleteRecordsByID(word.getId());
 		}
 		
+		words = selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED + " where length(word)=1");
+		
+		for(Word word: words) {
+			if(!Grammar.LETTERS.contains("word")) {
+				deleteRecordsByID(word.getId());
+				System.out.println("Deleted " + word);
+			}
+		}
+		
 	}
+
+
 }

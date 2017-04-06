@@ -33,24 +33,33 @@ public class LinksExtractor {
     	 * */
     	//String url="http://www.nagariknews.com/category/21?page="; //1-203
     	//String url = "http://www.nagariknews.com/category/22?page="; //1-94
-    	String url = "http://www.nagariknews.com/category/24?page="; //1-228
+    	//String url = "http://www.nagariknews.com/category/24?page="; //1-228
+    	String url="http://www.dainiknepal.com/section/latest-news/page/";//1-3114
     	/*
     	 * TODO:Extract Following
+    	 *
+	    	 http://www.dainiknepal.com/section/views/page/90; 
+	    	 http://www.dainiknepal.com/section/kala/page/265
+	    	 http://www.dainiknepal.com/section/diaspora/page/143
+	    	 http://www.dainiknepal.com/section/market/page/412
+	    	 http://www.dainiknepal.com/section/sports/page/161
+	    	 http://www.dainiknepal.com/section/rochak/page/88
+	    	 http://www.dainiknepal.com/section/health/page/49
 
-http://www.nagariknews.com/category/25?page=31
-http://www.nagariknews.com/category/26?page=71
-http://www.nagariknews.com/category/27?page=46
-http://www.nagariknews.com/category/28?page=13
-http://www.nagariknews.com/category/33?page=8
-http://www.nagariknews.com/category/81?page=55
-http://www.nagariknews.com/category/82?page=4
-http://www.nagariknews.com/category/37?page=3
+			http://www.nagariknews.com/category/25?page=31
+			http://www.nagariknews.com/category/26?page=71
+			http://www.nagariknews.com/category/27?page=46
+			http://www.nagariknews.com/category/28?page=13
+			http://www.nagariknews.com/category/33?page=8
+			http://www.nagariknews.com/category/81?page=55
+			http://www.nagariknews.com/category/82?page=4
+			http://www.nagariknews.com/category/37?page=3
     	 */
     	//SINGLE PAGE
-    	for(int i=37;i<=228;i++) {
+    	for(int i=50;i<=3114;i++) {
         	extractLinks(url+i);
         	//extractLinks(url+i+"/");
-        	Thread.sleep(2000);
+        	Thread.sleep(4000);
         }
     	
     	//MULTIPLE PAGES
@@ -77,19 +86,42 @@ http://www.nagariknews.com/category/37?page=3
     	
     }
 
-	private static void extractLinks(String url) throws IOException {
+	private static boolean extractLinks(String url) throws IOException, InterruptedException {
+		boolean successful = false;
 		System.out.println("Fetching URL - " +  url);
-		//Document doc = Jsoup.connect(url).get();
-		Document doc = Jsoup.connect(url).userAgent("Mozilla").get();
+		
+		Document doc = readHTMLDocument(url);
+		
+		if(doc == null) {
+			//Try again
+			doc = readHTMLDocument(url);
+		} 
+		
+		if(doc != null) {
         
-        //Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36").get();
-        //System.out.println(doc.text()); //REMOVE
-        Elements links = doc.select("a[href]");
+	        Elements links = doc.select("a[href]");
+	
+	        for (Element link : links) {
+	            print(link.attr("abs:href"), trim(link.text(), 35));
+	        }
+	        
+	        successful = true;
+		}
+        
+        return successful;
+	}
 
-        //print("\nLinks: (%d)", links.size());
-        for (Element link : links) {
-            print(link.attr("abs:href"), trim(link.text(), 35));
-        }
+	private static Document readHTMLDocument(String url) throws InterruptedException {
+		Document doc = null;
+		try {
+			doc = Jsoup.connect(url).userAgent("Mozilla").timeout(5000).get();
+		} catch (Exception e) {
+
+			System.out.println("Error Occurred while trying to read: " + url +" WILL TRY ONE MORE TIME IN 10s.");
+			Thread.sleep(10000);
+
+		}
+		return doc;
 	}
 
 	private static void extractImportURLs(String url) throws IOException {
@@ -123,7 +155,7 @@ http://www.nagariknews.com/category/37?page=3
 
     private static synchronized void print(String msg, Object... args) {
     	try{
-        FileUtilities.writeUTF8FileAppend("C:/Users/paudyals/Desktop/NLP/URLs_Auto3.txt", String.format(msg, args));
+        FileUtilities.writeUTF8FileAppend("C:/Users/paudyals/Desktop/NLP/URLs_dainiknepal.txt", String.format(msg, args));
     	//System.out.println(String.format(msg, args));
     	} catch(Exception e) {
     		System.err.println("Some Link Extraction Failed");

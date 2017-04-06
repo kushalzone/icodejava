@@ -12,8 +12,8 @@ public class SentenceUnreferencedService {
 	
 	public static void main (String args []) {
 		
-		//extractUnreferencedSentencesFromArticles(20000);
-		cleanSentences(2000000);
+		extractUnreferencedSentencesFromArticles(20000);
+		//cleanSentences(2000000);
 	}
 
 	private static void extractUnreferencedSentencesFromArticles(int articleLimit) {

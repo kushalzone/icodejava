@@ -9,11 +9,11 @@ public class ReportingService {
 	
 	public static void main (String args []) {
 		
-		printRowCountStatus();
+/*		printRowCountStatus();
 		printCrawlStatus();
 		printUnreferencedWordReport();
 		printUnreferencedSentenceReport();
-		printArticleTitleInfo();
+		printArticleTitleInfo();*/
 		
 		printCompoundWords();
 	}
@@ -21,6 +21,8 @@ public class ReportingService {
 
 	private static void printCompoundWords() {
 		WordsUnreferencedService.printCompoundWords();
+		WordsUnreferencedService.printCompoundWordsNotTagged();
+		WordsUnreferencedService.printCompoundWordsNotTaggedCount();
 		
 	}
 
@@ -39,7 +41,7 @@ public class ReportingService {
 	
 	
 	public static void printUnreferencedWordReport() {
-		System.out.println("========================================");
+		System.out.println("\n========================================");
 		ArticlesDB.selectArticlesCount();
 		ArticlesDB.selectArticlesCountProcessedForUnreferenceWord();
 		WordsUnreferencedDB.getRowCount(WordsUnreferencedDB.DATABASE_URL,Tables.WORDS_UNREFERENCED);
@@ -47,7 +49,7 @@ public class ReportingService {
 	}
 	
 	public static void printUnreferencedSentenceReport() {
-		System.out.println("========================================");
+		System.out.println("\n========================================");
 		ArticlesDB.selectArticlesCount();
 		ArticlesDB.selectArticlesCountProcessedForUnreferenceSentence();
 		WordsUnreferencedDB.getRowCount(WordsUnreferencedDB.DATABASE_URL,Tables.WORDS_UNREFERENCED);

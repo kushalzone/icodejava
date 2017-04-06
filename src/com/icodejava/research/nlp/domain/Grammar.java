@@ -2,8 +2,9 @@ package com.icodejava.research.nlp.domain;
 
 public class Grammar {
 
-	public static final String LETTERS="कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहक्षत्रज्ञअआइईउऊएऐओऔअंअ:";
-	public static final String NUMBERS="१२३४५६७८९०";
+	public static final String LETTERS = "कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहक्षत्रज्ञअआइईउऊएऐओऔअंअ:";
+	public static final String NUMBERS = "१२३४५६७८९०";
+	public static final String SET_OF_MATRAS = "ा ि ी ु ू ृ े ै ो ौ ं : ँ ॅ्" ;
 	public static final String [] COMPOUND_WORD_ENDING = new String [] {
 			"का",
 			"को",
@@ -25,6 +26,8 @@ public class Grammar {
 			"बिहीनै",
 			"भित्र",
 			"भित्रै",
+			"मध्ये",
+			"मध्य",
 			"माझ",
 			"माझै",
 			"माथि",
@@ -37,6 +40,7 @@ public class Grammar {
 			"लाइ",
 			"लाई",
 			"ले",
+			"लगायतका",
 			"वाट",
 			"वारे",
 			"विच",
@@ -57,6 +61,7 @@ public class Grammar {
 			"साथै",
 			"स्थित", 
 			"हरु",
+			"हरू",
 			"हरुका",
 			"हरूका",
 			"हरुको",
@@ -65,7 +70,8 @@ public class Grammar {
 			"हरुबाट", 
 			"हरुमा", 
 			"हरुलाई", 
-			"हरुले", 
+			"हरुले",
+			"हरूले",
 			"हरू",
 			"हरूमा" };
 	
@@ -77,6 +83,8 @@ public class Grammar {
 जापानीहरुसंग
 जापानजस्तै
 	 */
+	
+	//khanu, khayen, khayeko, khanchhu, khanechhu, khayo, khayi, khayeki, khayis, khayou, khanubhayo, khanuhunchha, khanuhunechha, khai, khaidim, khanu paryo, khayekole, khaidinus, khana, khayidiyera, khaidiun
 	
 	public static final String [] BIBHAKTI_PRATHAMA = new String [] {"ले", "बाट","वाट","द्वारा"};
 	public static final String [] BIBHAKTI_DWITYA = new String [] {};
@@ -173,6 +181,12 @@ public class Grammar {
 	public static final String VERB = "VERB"; //Kriya
 	
 	
+	public static boolean isMatra(Character c) {
+		
+		return SET_OF_MATRAS.indexOf(c) >= 0;
+	}
+	
+	
 	//Past Tense
 	//Present Tense
 	//Future Tense
@@ -230,16 +244,6 @@ WRB Wh­adverb
 
 
 
-
-Lexical Analysis: It involves identifying and analyzing the structure of words. The Lexicon of a language means the collection of words and phrases in a language. The lexical analysis is dividing the whole chunk of text into paragraphs, sentences and words.
-
-Syntactic Analysis/Parsing: It involves the analysis of words in the sentence for grammar and arranging those words in such a manner that it shows the relationship between the words. The sentence such as “The school goes to boy” is rejected by English syntactic analyzer.
-
-Semantic Analysis: This analysis draws either the exact meaning or the dictionary meaning from the text. The text is checked for a quality of significance. It is done by mapping the syntactic structures along with the objects in the task domain. The semantic analyzer disregards the sentence such as “hot ice-cream”.
-
-Discourse Integration: The meaning of any sentence depends on upon the meaning of the sentence just before it. In addition, it also brings about the meaning of immediately succeeding sentence.
-
-Pragmatic Analysis: During this analysis what was said is re-interpreted on what it actually meant. It involves driving those aspects of language which require the real world knowledge.
 
 
 	 */

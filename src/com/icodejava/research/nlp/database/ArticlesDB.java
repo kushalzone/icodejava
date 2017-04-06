@@ -9,14 +9,25 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.icodejava.research.nlp.domain.Article;
+
 public class ArticlesDB extends DBUtility {
-	/*
-	ID pk
-	SITE_ID fk WEBSITES.ID
-	CONTENT_HTML
-	CONTENT_TEXT
-	TITLE
-	WORD_EXTRACT_UNREFRENCED
+	
+	
+    /**
+    CREATE TABLE ARTICLES (
+    		 ID integer PRIMARY KEY AUTOINCREMENT,
+    		 SITE_ID integer,
+    		 CONTENT_HTML text,
+    		 CONTENT_TEXT text NOT NULL,
+    		 TITLE text, 
+    		 WORD_EXTRACT_UNREFERENCED CHAR(1), 
+    		 SENTENCE_EXTRACT_UNREFERENCED CHAR(1), 
+    		 SENTENCE_EXTRACT_UNREF_FREQ CHAR(1), 
+    		 WORD_EXTRACT_UNREF_FREQ CHAR(1), 
+    		 TITLE_CLEANED CHAR(1),
+    		 FOREIGN KEY (SITE_ID) REFERENCES WEBSITES(ID));
+	
 	*/
     /**
      * @param args the command line arguments
@@ -25,26 +36,36 @@ public class ArticlesDB extends DBUtility {
     public static void main(String[] args) throws ClassNotFoundException {
     	//createArticlesTable();
     	//selectAllArticles();
-    	selectArticleByID(4);
-    	//selectDistinctTitles();
+    	//selectArticleByID(4);
+    	selectDistinctTitles();
     	//selectArticlesCountProcessedForUnreferenceWord();
     }
 	
 	
-
-    public static void createArticlesTable() {
+	public static void createArticlesTable() {
         String sql = "CREATE TABLE IF NOT EXISTS ARTICLES (\n"
                 + " ID integer PRIMARY KEY AUTOINCREMENT,\n"
                 + " SITE_ID integer,\n"
                 + " CONTENT_HTML text,\n"
                 + " CONTENT_TEXT text NOT NULL,\n"
-                + " TITLE text WORD_EXTRACT_UNREFERENCED CHAR(1),\n"
+                + " TITLE text, \n "
+                + "	WORD_EXTRACT_UNREFERENCED CHAR(1),\n"
+                + "	SENTENCE_EXTRACT_UNREFERENCED CHAR(1),\n"
+                + " SENTENCE_EXTRACT_UNREF_FREQ CHAR(1),\n"
+                + " WORD_EXTRACT_UNREF_FREQ CHAR(1),\n"
+                + " TITLE_CLEANED CHAR(1),\n"
                 + " FOREIGN KEY (SITE_ID) REFERENCES WEBSITES(ID)"
                 + ");";
         
         System.out.println(sql);
 
         createNewTable(sql);
+    }
+	
+
+
+    public static void deleteArticles(String sql) {
+
     }
 
     public static int insertArticles(int siteID, String html, String text, String title) {
@@ -80,12 +101,25 @@ public class ArticlesDB extends DBUtility {
         
     }
 
-    public static void deleteArticles(String sql) {
 
-    }
 
     public static void selectAllArticles(){
         String sql = "SELECT * FROM ARTICLES";
+
+        try (Connection conn = DriverManager.getConnection( DATABASE_URL);
+             Statement stmt  = conn.createStatement();
+             ResultSet rs    = stmt.executeQuery(sql)){
+
+            while (rs.next()) {
+                System. out.println(rs.getInt("ID" ) +  "\t" + rs.getString("CONTENT_HTML" ) +  "\t" + rs.getString("CONTENT_TEXT" ));
+            }
+        } catch (SQLException e) {
+            System. out.println(e.getMessage());
+        }
+    }
+    
+    public static void selectArticleByID(int articleID){
+        String sql = "SELECT * FROM ARTICLES WHERE ID=" +  articleID;
 
         try (Connection conn = DriverManager.getConnection( DATABASE_URL);
              Statement stmt  = conn.createStatement();
@@ -113,21 +147,116 @@ public class ArticlesDB extends DBUtility {
             System. out.println(e.getMessage());
         }
     }
-    
-    public static void selectArticleByID(int articleID){
-        String sql = "SELECT * FROM ARTICLES WHERE ID=" +  articleID;
+
+
+
+	public static void selectArticlesCountProcessedForUnreferenceSentence() {
+		String sql = "SELECT count(*) FROM ARTICLES WHERE SENTENCE_EXTRACT_UNREFERENCED=\"Y\"";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			if (rs.next()) {
+				System.out.println("Total Articles Processed for extracing Unreferenced Sentences: " + rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+	
+	
+	public static void selectArticlesCountProcessedForUnreferenceWord() {
+		String sql = "SELECT count(*) FROM ARTICLES WHERE WORD_EXTRACT_UNREFERENCED=\"Y\"";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			if (rs.next()) {
+				System.out.println("Total Articles Processed for extracing Unreferenced Words: " + rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+	
+	public static List<Integer> selectArticlesUnProcessedSentences(int limit) {
+		
+		String sql = "SELECT ID FROM ARTICLES WHERE SENTENCE_EXTRACT_UNREFERENCED IS NULL LIMIT " + limit;
+		
+		List<Integer> ids = new ArrayList<Integer>();
 
         try (Connection conn = DriverManager.getConnection( DATABASE_URL);
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
 
             while (rs.next()) {
-                System. out.println(rs.getInt("ID" ) +  "\t" + rs.getString("CONTENT_HTML" ) +  "\t" + rs.getString("CONTENT_TEXT" ));
+            	ids.add(rs.getInt("ID"));
             }
         } catch (SQLException e) {
             System. out.println(e.getMessage());
         }
-    }
+        
+        System.out.println("Returning " +  ids.size() + " records not previously processed for extracing UNREFERENCED SENTENCES");
+        return ids;
+		
+	}
+	
+	public static List<Integer> selectArticlesUnProcessedWords(int limit) {
+		
+		String sql = "SELECT ID FROM ARTICLES WHERE WORD_EXTRACT_UNREFERENCED IS NULL LIMIT " + limit;
+		
+		List<Integer> ids = new ArrayList<Integer>();
+
+        try (Connection conn = DriverManager.getConnection( DATABASE_URL);
+             Statement stmt  = conn.createStatement();
+             ResultSet rs    = stmt.executeQuery(sql)){
+
+            while (rs.next()) {
+            	ids.add(rs.getInt("ID"));
+            }
+        } catch (SQLException e) {
+            System. out.println(e.getMessage());
+        }
+        
+        System.out.println("Returning " +  ids.size() + " records not previously processed for extracing UNREFERENCED WORDS");
+        return ids;
+		
+	}
+	
+	public static void selectArticlesWithoutTitlesCount() {
+		String sql = "SELECT COUNT(*) FROM ARTICLES WHERE TITLE IS NULL";
+
+        try (Connection conn = DriverManager.getConnection( DATABASE_URL);
+             Statement stmt  = conn.createStatement();
+             ResultSet rs    = stmt.executeQuery(sql)){
+
+            if (rs.next()) {
+            	System.out.println("Total Articles Without Titles: " + rs.getString(1));
+            }
+        } catch (SQLException e) {
+            System. out.println(e.getMessage());
+        }
+	}
+	
+	
+	public static void selectArticlesWithTitlesCount() {
+		String sql = "SELECT COUNT(*) FROM ARTICLES WHERE TITLE IS NOT NULL";
+
+        try (Connection conn = DriverManager.getConnection( DATABASE_URL);
+             Statement stmt  = conn.createStatement();
+             ResultSet rs    = stmt.executeQuery(sql)){
+
+            if (rs.next()) {
+            	System.out.println("Total Articles With Titles: " + rs.getString(1));
+            }
+        } catch (SQLException e) {
+            System. out.println(e.getMessage());
+        }
+	}
 
 
 
@@ -149,7 +278,6 @@ public class ArticlesDB extends DBUtility {
         return text;
 	}
 	
-	
 	public static void selectDistinctTitles() {
 		String sql = "SELECT DISTINCT TITLE FROM ARTICLES LIMIT 1000";
 
@@ -165,27 +293,99 @@ public class ArticlesDB extends DBUtility {
             System. out.println(e.getMessage());
         }
 	}
+
+
+
+	public static List<Article> selectTitlesNotMarkedAsClean(int limit) {
+		List<Article> articles = new ArrayList<Article>();
+
+		String sql = "SELECT ID, TITLE FROM ARTICLES WHERE TITLE_CLEANED IS NULL LIMIT " + limit;
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				int id = rs.getInt("ID");
+				String title = rs.getString("TITLE");
+
+				articles.add(new Article(id, null, null, title));
+
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		return articles;
+	}
 	
-	public static List<Integer> selectArticlesUnProcessed(int limit) {
-		
-		String sql = "SELECT ID FROM ARTICLES WHERE WORD_EXTRACT_UNREFERENCED IS NULL LIMIT " + limit;
-		
-		List<Integer> ids = new ArrayList<Integer>();
+	public static List<Article> selectTitles(int limit) {
+		List<Article> articles = new ArrayList<Article>();
 
-        try (Connection conn = DriverManager.getConnection( DATABASE_URL);
-             Statement stmt  = conn.createStatement();
-             ResultSet rs    = stmt.executeQuery(sql)){
+		String sql = "SELECT ID, TITLE FROM ARTICLES LIMIT " + limit;
 
-            while (rs.next()) {
-            	ids.add(rs.getInt("ID"));
-            }
-        } catch (SQLException e) {
-            System. out.println(e.getMessage());
-        }
-        
-        System.out.println("Returning " +  ids.size() + " records not previously processed for extracing UNREFERENCED WORDS");
-        return ids;
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				int id = rs.getInt("ID");
+				String title = rs.getString("TITLE");
+
+				articles.add(new Article(id, null, null, title));
+
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		return articles;
+	}
+	
+	public static int selectTitlesMarkedAsClean_count() {
 		
+		int cleanTitlesCount = 0;
+
+		String sql = "SELECT count (*) FROM ARTICLES WHERE TITLE_CLEANED IS NOT NULL";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			if (rs.next()) {
+				cleanTitlesCount = rs.getInt(1);
+				
+				System.out.println("Total Articles With CLEANED titles " +  cleanTitlesCount);
+
+
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		return cleanTitlesCount;
+	}
+	
+	public static void updateArticleMarkAsProcessedForUnreferenceSentences(Integer id) {
+
+		String sql = "UPDATE " + Tables.ARTICLES + " SET SENTENCE_EXTRACT_UNREFERENCED=\"Y\" WHERE ID="+id;
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			int result = pstmt.executeUpdate();
+
+			if (result > 0) {
+				//System.out.println("Successfully updated Article to mark it as processed for word extract (unrefereneced) + ID " + id);
+			} else {
+				System.out
+						.println("Could not update the Article. Make sure the ID exists or there are no other issues. ID "+ id);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 
@@ -211,21 +411,48 @@ public class ArticlesDB extends DBUtility {
 		}
 
 	}
+	
+	public static void updateArticleTitle(Integer id, String title) {
 
-
-
-	public static void selectArticlesCountProcessedForUnreferenceWord() {
-		String sql = "SELECT count(*) FROM ARTICLES WHERE WORD_EXTRACT_UNREFERENCED=\"Y\"";
+		String sql = "UPDATE " + Tables.ARTICLES + " SET TITLE=\"" + title + "\" WHERE ID=" + id;
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
-				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)) {
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-			if (rs.next()) {
-				System.out.println("Total Articles Processed for extracing Unreferenced Words: " + rs.getInt(1));
+			int result = pstmt.executeUpdate();
+
+			if (result > 0) {
+				System.out.println("Successfully updated article title: " + title);
+				updateArticleTitleCleanedFlag(id, "Y");
+			} else {
+				System.out.println(
+						"Could not update the Article. Make sure the ID exists or there are no other issues. ID " + id);
 			}
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public static void updateArticleTitleCleanedFlag(Integer id, String flag) {
+
+		String sql = "UPDATE " + Tables.ARTICLES + " SET TITLE_CLEANED=\"" + flag + "\" WHERE ID=" + id;
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			int result = pstmt.executeUpdate();
+
+			if (result > 0) {
+				//System.out.println("Successfully updated article title clean flag to: " + flag);
+			} else {
+				System.out.println(
+						"Could not update the Article. Make sure the ID exists or there are no other issues. ID " + id);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}

@@ -43,7 +43,7 @@ public class WebsitesDB extends DBUtility {
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
 			
-			System.out.println("\n==============================");
+			System.out.println("\n===============TOTAL WEBSITES BY DOMAIN===============");
 
 			while (rs.next()) {
 				System.out.println(rs.getString(1) +" ("+rs.getInt(2)+")");
@@ -101,7 +101,7 @@ public class WebsitesDB extends DBUtility {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("select seq from sqlite_sequence where name=\"WEBSITES\"");
 
-			System.out.println("Inserted Record ID: " + (rowID = rs.getInt(1)));
+			//System.out.println("Inserted Record ID: " + (rowID = rs.getInt(1)));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -251,7 +251,7 @@ public class WebsitesDB extends DBUtility {
 				ResultSet rs = stmt.executeQuery(sql)) {
 
 			if (rs.next()) {
-				System.out.println("Record Already Exists");
+				//System.out.println("Record Already Exists");
 				alreadyExists = true;
 			}
 

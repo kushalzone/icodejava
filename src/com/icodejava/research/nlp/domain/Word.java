@@ -8,8 +8,15 @@ public class Word {
 	private String word;
 	private String value_romanized;
 	private String verified;
+	private String isCompoundWord;
+	
 	private boolean modified;
 
+	
+	//Marked for Split
+	//Marked for Delete
+	//Marked as Single Word
+	//Marked as Compound Word
 	public Word(int id, String word, String verified) {
 		this.id = id;
 		this.word = word;
@@ -21,44 +28,53 @@ public class Word {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getWord() {
-		return word;
-	}
-
-	public void setWord(String word) {
-		this.word = word;
+	public String getIsCompoundWord() {
+		return isCompoundWord;
 	}
 
 	public String getValue_romanized() {
 		return value_romanized;
 	}
 
-	public void setValue_romanized(String value_romanized) {
-		this.value_romanized = value_romanized;
-	}
-
 	public String getVerified() {
 		return verified;
 	}
 
-	public void setVerified(String verified) {
-		this.verified = verified;
+	public String getWord() {
+		return word;
 	}
 
 	public boolean isModified() {
 		return modified;
 	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setIsCompoundWord(String isCompoundWord) {
+		this.isCompoundWord = isCompoundWord;
+	}
+
 	public void setModified(boolean modified) {
 		this.modified = modified;
+	}
+
+	public void setValue_romanized(String value_romanized) {
+		this.value_romanized = value_romanized;
+	}
+
+	public void setVerified(String verified) {
+		this.verified = verified;
+	}
+	
+	public void setWord(String word) {
+		this.word = word;
 	}
 
 	public String toString() {
 		return word;
 	}
+
 
 }

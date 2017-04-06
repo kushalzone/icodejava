@@ -14,6 +14,7 @@ encoding//src/com/icodejava/research/nlp/database/ArticlesDB.java=UTF-8
 encoding//src/com/icodejava/research/nlp/database/WordsUnreferencedDB.java=UTF-8
 encoding//src/com/icodejava/research/nlp/domain/Grammar.java=UTF-8
 encoding//src/com/icodejava/research/nlp/domain/Tags.java=UTF-8
+encoding//src/com/icodejava/research/nlp/services/WordsUnreferencedService.java=UTF-8
 encoding//src/com/icodejava/research/nlp/sources/other/misc_words.txt=UTF-8
 encoding//src/com/icodejava/research/nlp/sources/other/misc_words_numerals.txt=UTF-8
 encoding//src/com/icodejava/research/nlp/test/NPTokenizerTest.java=UTF-8
