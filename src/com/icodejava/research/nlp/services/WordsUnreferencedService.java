@@ -2,7 +2,9 @@ package com.icodejava.research.nlp.services;
 
 import java.util.List;
 
+import com.icodejava.research.nlp.NPTokenizer;
 import com.icodejava.research.nlp.database.WordsUnreferencedDB;
+import com.icodejava.research.nlp.domain.CompoundWordEnding;
 import com.icodejava.research.nlp.domain.Grammar;
 import com.icodejava.research.nlp.domain.Word;
 import com.icodejava.research.nlp.utils.DevanagariUnicodeToRomanEnglish;
@@ -14,10 +16,30 @@ public class WordsUnreferencedService {
 	  //printCompoundWords();
 	  //printCompoundWordsNotTagged();
 		
-	  // romanizeAndSaveWords(HOW_MANY_WORDS_TO_ROMANIZE);
-		
+	  //romanizeAndSaveWords(HOW_MANY_WORDS_TO_ROMANIZE);
+	 //WordsUnreferencedDB.selectCompoundWordsNotTagged("योस्");
+	  //WordsUnreferencedDB.selectCompoundWordsNotTagged("मै");
 	  tagCompoundWords(HOW_MANY_WORDS);
+		
+		//tagRootWords(0);
 
+	}
+	
+	private static void tagRootWords(int limit) {
+		//load words
+		List<Word> words = WordsUnreferencedDB.selectRecordsBetweenIds(20000,40000);//TODO: call the right thing here
+		//run a function to find root word
+		
+		for(Word word:words) {
+			String processed = NPTokenizer.getNepaliRootWord(word.getWord());
+			//System.out.println("Original: " + word + " Root: " + );
+			
+			if(processed.equalsIgnoreCase(word.getWord())) {
+				System.out.println("Possible Single Word:" + word);
+			}
+		}
+		
+		//update the database
 	}
 
 	private static void tagCompoundWords(int limit) {
@@ -26,36 +48,57 @@ public class WordsUnreferencedService {
 		
 		//Tag as Compound Words
 		for(Word word: words) {
-			if(word.getWord().endsWith("हरुका") ||
-					word.getWord().endsWith("हरूका") ||
-					word.getWord().endsWith("हरुको") ||
-					word.getWord().endsWith("हरूको") ||
-					word.getWord().endsWith("हरुद्वारा") ||
-					word.getWord().endsWith("हरुबाट") ||
-					word.getWord().endsWith("हरुमा") ||
-					word.getWord().endsWith("हरुलाई") ||
-					word.getWord().endsWith("हरुले") ||
-					word.getWord().endsWith("हरूले") ||
-					word.getWord().endsWith("हरु") ||
-					word.getWord().endsWith("हरू") ||
-					word.getWord().endsWith("हरूमा") ||
-					word.getWord().endsWith("बाट") ||
-					word.getWord().endsWith("बाटै") ||
-					(word.getWord().endsWith("मध्य") && word.getWord().length() > "मध्य".length())||
-					(word.getWord().endsWith("मध्ये") && word.getWord().length() > "मध्ये".length())||
-					(word.getWord().endsWith("मार्फत") && word.getWord().length() > "मार्फत".length())||
-					(word.getWord().endsWith("स्थित") && word.getWord().length() > "स्थित".length()) ||
-					(word.getWord().endsWith("सहित") && word.getWord().length() > "सहित".length()) ||
-					(word.getWord().endsWith("समेत") && word.getWord().length() > "समेत".length()) ||
-					(word.getWord().endsWith("सँग") && word.getWord().length() > "सँग".length()) ||
-					(word.getWord().endsWith("भित्र") && word.getWord().length() > "भित्र".length()) ||
-					(word.getWord().endsWith("माथिको") && word.getWord().length() > "माथिको".length()) ||
-					(word.getWord().endsWith("जस्तै") && word.getWord().length() > "जस्तै".length()) ||
-					(word.getWord().endsWith("झै") && word.getWord().length() > "झै".length()) ||
-					(word.getWord().endsWith("लगायतका") && word.getWord().length() > "लगायतका".length()) ||
-					(word.getWord().endsWith("बीचको") && word.getWord().length() > "बीचको".length())
+			String value = word.getWord();
+			int length = value.length();
+			
+			
+			 if(endsWithCompoundWord(value))
+			
+			/*if(value.endsWith("हरुका") ||
+					value.endsWith("हरूका") ||
+					value.endsWith("हरुको") ||
+					value.endsWith("हरूको") ||
+					value.endsWith("हरुद्वारा") ||
+					value.endsWith("हरुबाट") ||
+					value.endsWith("हरुमा") ||
+					value.endsWith("हरुलाई") ||
+					value.endsWith("हरुले") ||
+					value.endsWith("हरूले") ||
+					value.endsWith("हरु") ||
+					value.endsWith("हरू") ||
+					value.endsWith("हरूमा") ||
+					value.endsWith("बाट") ||
+					value.endsWith("बाटै") ||
+					(value.endsWith("मध्य") && length > "मध्य".length())||
+					(value.endsWith("मध्ये") && length > "मध्ये".length())||
+					(value.endsWith("मार्फत") && length > "मार्फत".length())||
+					(value.endsWith("स्थित") && length > "स्थित".length()) ||
+					(value.endsWith("सहित") && length > "सहित".length()) ||
+					(value.endsWith("समेत") && length > "समेत".length()) ||
+					(value.endsWith("भित्र") && length > "भित्र".length()) ||
+					(value.endsWith("सँग") && length > "सँग".length()) ||
+					(value.endsWith("सँगै") && length > "सँगै".length()) ||
+					(value.endsWith("विहिन") && length > "विहिन".length()) ||
+					(value.endsWith("संग") && length > "संग".length()) ||
+					(value.endsWith("समक्ष") && length > "समक्ष".length()) ||
+					(value.endsWith("साथ") && length > "साथ".length()) ||
+					(value.endsWith("भित्रै") && length > "भित्रै".length()) ||
+					(value.endsWith("माथि") && length > "माथि".length()) ||
+					(value.endsWith("माथिको") && length > "माथिको".length()) ||
+					(value.endsWith("जस्तै") && length > "जस्तै".length()) ||
+					(value.endsWith("झै") && length > "झै".length()) ||
+					(value.endsWith("लगायतका") && length > "लगायतका".length()) ||
+					(value.endsWith("बीचको") && length > "बीचको".length()) ||
+					(value.endsWith("सम्म") && length > "सम्म".length()) ||
+					(value.endsWith("बारे") && length > "बारे".length()) ||
+					(value.endsWith("लाई") && length > "लाई".length() ) ||
+					(value.endsWith("तीर") && length > "तीर".length() ) ||
+					(value.endsWith("योस") && length > "योस".length() ) ||
+					(value.endsWith("योस्") && length > "योस्".length() )
 					
-					) {
+					
+					) */
+			 {
 				word.setIsCompoundWord("Y");
 			}
 			
@@ -66,8 +109,44 @@ public class WordsUnreferencedService {
 			
 		
 	}
+	
+	
 
-	private static void romanizeAndSaveWords(int limit) {
+	private static boolean endsWithCompoundWord(String word) {
+		boolean shouldProcess = false;
+		for(CompoundWordEnding cwe: CompoundWordEnding.values()) {
+			if(word.endsWith(cwe.getNepaliWordEnding()) && word.length() > cwe.getNepaliWordEnding().length() && !isExceptionCompoundWordEnding(cwe)) {
+				shouldProcess = true;
+			}
+			
+			//Process Exceptions
+			if(cwe.getNepaliWordEnding().equalsIgnoreCase(cwe.KA.getNepaliWordEnding())) {
+				shouldProcess = false;
+			}
+		}
+
+		return shouldProcess;
+	}
+
+	/**
+	 * There shorter compound word endings need to be carefully analyzed due to
+	 * the volume of word they impact, so putting an exception right now before
+	 * tagging the compound word.
+	 * 
+	 * @param cwe
+	 * @return
+	 */
+	private static boolean isExceptionCompoundWordEnding(CompoundWordEnding cwe) {
+		
+		return cwe == cwe.KA || 
+				cwe ==cwe.MA ||
+				cwe == cwe.KO ||
+				cwe == cwe.LE || 
+				cwe == cwe.MA ||
+				cwe == cwe.KEE;
+	}
+
+	public static void romanizeAndSaveWords(int limit) {
 		List<Word> words = WordsUnreferencedDB.selectWordsNotRomanized(limit);
 		
 		for(Word word: words) {
@@ -82,8 +161,8 @@ public class WordsUnreferencedService {
 	 */
 	public static void printCompoundWords() {
 
-		for (String endsWith : Grammar.COMPOUND_WORD_ENDING) {
-			WordsUnreferencedDB.selectCompoundWords(endsWith);
+		for (CompoundWordEnding endsWith : CompoundWordEnding.values()) {
+			WordsUnreferencedDB.selectCompoundWords(endsWith.getNepaliWordEnding());
 		}
 
 	}
@@ -94,8 +173,8 @@ public class WordsUnreferencedService {
 	public static void printCompoundWordsNotTagged() {
 
 		System.out.println("====COMPOUND WORDS NOT TAGGED=====");
-		for (String endsWith : Grammar.COMPOUND_WORD_ENDING) {
-			WordsUnreferencedDB.selectCompoundWordsNotTagged(endsWith);
+		for (CompoundWordEnding endsWith : CompoundWordEnding.values()) {
+			WordsUnreferencedDB.selectCompoundWordsNotTagged(endsWith.getNepaliWordEnding());
 		}
 
 	}

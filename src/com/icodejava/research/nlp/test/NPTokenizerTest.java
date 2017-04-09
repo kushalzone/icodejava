@@ -12,7 +12,14 @@ public class NPTokenizerTest {
 		//textReplaceTest();
 		//cleanBadExamplesTest();
 		//cleanSentences();
-		System.out.println(NPTokenizer.cleanWordToken("÷अनौपचारिक"));
+		//System.out.println(NPTokenizer.cleanWordToken("÷अनौपचारिक"));
+		String str;
+		System.out.println(str = NPTokenizer.cleanSentence(",        ,       .        ,    -     (     -  ).  ’         (      ) ,                    .            .        –  .                ’   ’  मन परे हरियो नपरे रातो"));
+		System.out.println(str = NPTokenizer.cleanSentence(",               ’       .                                    +                 + +  +          ,          =   मन परे हरियो नपरे रातो,"));
+		System.out.println(str= NPTokenizer.cleanSentence(",         ,               .                                                   ,           .                .        .            ,                                    ,            ’                     ****      :  मन परे हरियो नपरे रातो"));
+//		System.out.println(str= NPTokenizer.cleanSentence(""));
+		//NPTokenizer.printChracters(str);
+		
 		
 	}
 	

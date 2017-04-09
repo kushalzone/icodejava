@@ -1,0 +1,12 @@
+Remove Duplicate Words From Database
+Create Stemmer Class
+Write a class to tag words by data classifier file
+Generate name, Roman pair from a file
+Complete Unicodization of Shabdakosh
+Complete Word fixer
+Clean Sentences
+Remove Duplciate Sentences
+Article to Neo4j
+
+Calculate and store number of words in a sentence // updat this everytime a word clean batch is run.
+Name Tokenizer - Takes a name and splits into salute, first name, middle name, last name and pen name

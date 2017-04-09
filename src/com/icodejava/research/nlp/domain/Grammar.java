@@ -5,86 +5,11 @@ public class Grammar {
 	public static final String LETTERS = "कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहक्षत्रज्ञअआइईउऊएऐओऔअंअ:";
 	public static final String NUMBERS = "१२३४५६७८९०";
 	public static final String SET_OF_MATRAS = "ा ि ी ु ू ृ े ै ो ौ ं : ँ ॅ्" ;
-	public static final String [] COMPOUND_WORD_ENDING = new String [] {
-			"का",
-			"को",
-			"जस्तै",
-			"झैं",
-			"तिर",
-			"तीर",
-			"द्वारा",
-			"पर्ने", 
-			"पुर्ण",
-			"पूर्ण", 
-			"बाट",
-			"बाटै", 
-			"बारे",
-			"बिच",
-			"बिहिन",
-			"बिहीन",
-			"बिहिनै",
-			"बिहीनै",
-			"भित्र",
-			"भित्रै",
-			"मध्ये",
-			"मध्य",
-			"माझ",
-			"माझै",
-			"माथि",
-			"माथिको",
-			"माथी",
-			"माथीको",
-			"मार्फत",
-			"मार्फतै",
-			"मै",
-			"लाइ",
-			"लाई",
-			"ले",
-			"लगायतका",
-			"वाट",
-			"वारे",
-			"विच",
-			"विहिन", 
-			"सँग",
-			"संग",
-			"सङ्ग",
-			"संगै",
-			"सँगै",
-			"सङ्गै",
-			"समक्ष",
-			"समेत",
-			"समेतै",
-			"सम्म",
-			"सहित",
-			"सहितै",
-			"साथ",
-			"साथै",
-			"स्थित", 
-			"हरु",
-			"हरू",
-			"हरुका",
-			"हरूका",
-			"हरुको",
-			"हरूको",
-			"हरुद्वारा", 
-			"हरुबाट", 
-			"हरुमा", 
-			"हरुलाई", 
-			"हरुले",
-			"हरूले",
-			"हरू",
-			"हरूमा" };
 	
-	/*
-	 * जापानसहितका
-जापानीहरूबीच 
-जापानमाथि
-जापानविरूद्ध
-जापानीहरुसंग
-जापानजस्तै
-	 */
+
 	
-	//khanu, khayen, khayeko, khanchhu, khanechhu, khayo, khayi, khayeki, khayis, khayou, khanubhayo, khanuhunchha, khanuhunechha, khai, khaidim, khanu paryo, khayekole, khaidinus, khana, khayidiyera, khaidiun
+	//khanu, khayen, khayeko, khanchhu, khanechhu, khayo, khayi, khayeki, khayis, khayou, khanubhayo, khanuhunchha, khanuhunechha, khai, khaidim, khanu paryo, khana parne, khanubhanda, khanasamet, khanasanga, khanasamma.khanaka, khanako, khanalai
+	//khayekole, khaidinus, khana, khayidiyera, khaidiun, खाइयोस
 	
 	public static final String [] BIBHAKTI_PRATHAMA = new String [] {"ले", "बाट","वाट","द्वारा"};
 	public static final String [] BIBHAKTI_DWITYA = new String [] {};

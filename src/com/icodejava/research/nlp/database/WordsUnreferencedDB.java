@@ -33,13 +33,13 @@ public class WordsUnreferencedDB extends DBUtility {
 		//selectRecordsBetweenIds(0, 50000);
 		//selectRecordCountByLength();
 		
-		selectWordWithLengthGreaterThan(20);
+		//selectWordWithLengthGreaterThan(20);
 		//selectWordWithLengthEqualTo(3);
 		
 		//cleanWords();
 		//cleanStrangeWords();
 		
-		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%à%'");
+		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%नु'");
 		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word = '÷'");
 		
 		//selectWithQuery("SELECT COUNT (DISTINCT WORD) FROM " + Tables.WORDS_UNREFERENCED);
@@ -257,7 +257,7 @@ public class WordsUnreferencedDB extends DBUtility {
 			Word word = null;
 			while (rs.next()) {
 				word = new Word(rs.getInt(1), rs.getString(2), rs.getString(3));
-				//System.out.println(rs.getString(1)+" " + rs.getString(2));
+				System.out.println(rs.getString(1)+" " + rs.getString(2));
 				words.add(word);
 			}
 			if(words.size() > 0) {

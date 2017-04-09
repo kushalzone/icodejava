@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import com.icodejava.research.nlp.domain.CompoundWordEnding;
 import com.icodejava.research.nlp.domain.Grammar;
 import com.icodejava.research.nlp.domain.WordFrequency;
 
@@ -29,7 +30,7 @@ public class NPTokenizer {
         
         //String text = ArticlesDB.selectArticleTextByID(7000);
         
-    	String text = HtmlTextExtractor.extractTextFromWeb("http://www.hongkongnepali.com/2008-12-29-07-00-23/9088-2011-10-04-17-26-34.html");
+    	//String text = HtmlTextExtractor.extractTextFromWeb("http://www.hongkongnepali.com/2008-12-29-07-00-23/9088-2011-10-04-17-26-34.html");
         
 
         
@@ -47,7 +48,9 @@ public class NPTokenizer {
             "This is a test sentence really good one");
 */
 
-        getWordFrequencyMap(text);
+        //getWordFrequencyMap(text);
+        
+        getNepaliRootWord("विस्मयादिबोध");
 
     }
 
@@ -96,6 +99,20 @@ public class NPTokenizer {
 
         return words;
     }
+    
+    public static String getNepaliRootWord(String compoundWord) {
+    	for (CompoundWordEnding dir : CompoundWordEnding.values()) {
+    		 String cwe = dir.getNepaliWordEnding();
+    		 
+    		 if(compoundWord.endsWith(cwe)) {
+    		  compoundWord = compoundWord.replaceAll(cwe, "");
+    		 }
+    		  
+    		}
+    	//System.out.println(compoundWord);
+    	
+    	return compoundWord;
+    }
 
     public static String cleanWordToken(String word) {
 
@@ -137,6 +154,8 @@ public class NPTokenizer {
         sentence = sentence.replaceAll("@", "");
         sentence = sentence.replaceAll("\"", "");
         sentence = sentence.replaceAll("\'", "");
+        sentence = sentence.replaceAll("[ a-zA-Z0-9]{1,}[\\(\\)\\+\\–\\*’,-\\.%;:=]{0,}", " ");//TEST
+        sentence = sentence.trim().replaceAll("( )+", " ");//remove multiple spaces
         sentence = sentence.trim();
         
         //sentence = sentence.replaceAll("\n", "");

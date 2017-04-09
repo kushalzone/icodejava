@@ -15,31 +15,23 @@ import com.icodejava.blog.published.utilities.FileUtilities;
  */
 public class LinksExtractor {
     public static void main(String[] args) throws IOException, InterruptedException {
-        //Validate.isTrue(args.length == 1, "usage: supply url to fetch");
     	
-        //String url = "http://ujyaaloonline.com/news/category/29/literature-art/page/";
-        //String url="http://hamrakura.com/news-pages.php?_Id=16&per=200&p=";
-    	//String url="http://www.onlinekhabar.com/content/news/page/";//HAS ISSUES
-    	//String url="http://www.majheri.com/node?page=";//HAS ISSUES
-    	//String url="http://setopati.com/raajneeti/page/";
-    	//String url="http://www.ratopati.com/%E0%A4%A6%E0%A5%87%E0%A4%B6/page/1/"; //HAS ISSUES
-    	//String url = "http://www.mysansar.com/category/news-views/page/"; //1-87
-    	//String url = "http://www.mysansar.com/category/saturday-fiction/page/";//1-9
-    	//String url = "http://tokyonepal.com/category/nepal-news/page/"; //1-387
-    	//String url = "http://nepalipost.com/index/?catid=1&php=1&p="; // 1-769
-    	//String url="http://www.samakalinsahitya.com/index.php?show=category&cat_id=24&page="; //1:0-11,2:0-6,3:0-28,4:0-9,5:0-23,8:0-2,10:0-3,11:0-4,13:0-10,16:0-3,17:0-1,18:0-1,20:0-1,24:0-2
-        
-    	/*String url="http://www.newsnrn.com/category/america/page/";//1-73 HAS ISSUES
-    	 * */
-    	//String url="http://www.nagariknews.com/category/21?page="; //1-203
-    	//String url = "http://www.nagariknews.com/category/22?page="; //1-94
-    	//String url = "http://www.nagariknews.com/category/24?page="; //1-228
-    	String url="http://www.dainiknepal.com/section/latest-news/page/";//1-3114
+    	
+//    	String url ="http://www.nagariknews.com/category/81?page=";//1-55
+    	String url ="http://www.nagariknews.com/category/26?page="; //1-71
+    	
+    	for(int i=1;i<=71;i++) {
+        	extractLinks(url+i);
+        	//extractLinks(url+i+"/");
+        	Thread.sleep(2000);
+        }
+    	
+ 
     	/*
     	 * TODO:Extract Following
     	 *
-	    	 http://www.dainiknepal.com/section/views/page/90; 
-	    	 http://www.dainiknepal.com/section/kala/page/265
+	    	 
+	    	 http://www.dainiknepal.com/section/kala/page/265 
 	    	 http://www.dainiknepal.com/section/diaspora/page/143
 	    	 http://www.dainiknepal.com/section/market/page/412
 	    	 http://www.dainiknepal.com/section/sports/page/161
@@ -47,21 +39,35 @@ public class LinksExtractor {
 	    	 http://www.dainiknepal.com/section/health/page/49
 
 			http://www.nagariknews.com/category/25?page=31
-			http://www.nagariknews.com/category/26?page=71
+			
 			http://www.nagariknews.com/category/27?page=46
 			http://www.nagariknews.com/category/28?page=13
 			http://www.nagariknews.com/category/33?page=8
-			http://www.nagariknews.com/category/81?page=55
+			
 			http://www.nagariknews.com/category/82?page=4
 			http://www.nagariknews.com/category/37?page=3
+			
+			
+			http://samudrapari.com/category/news/page/2802/
+			http://samudrapari.com/category/diaspora/page/129/
+			http://samudrapari.com/category/opinion/page/33/
+			http://samudrapari.com/category/interview/page/13/
+			http://samudrapari.com/category/literature/page/29/
+			http://samudrapari.com/category/entertainment/page/89/
+			http://samudrapari.com/category/%E0%A4%B8%E0%A5%82%E0%A4%9A%E0%A4%A8%E0%A4%BE-%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%AC%E0%A4%BF%E0%A4%A7%E0%A4%BF/page/9/    //suchana prabridhhi
+			http://samudrapari.com/category/%E0%A4%B8%E0%A5%8D%E0%A4%B5%E0%A4%BE%E0%A4%B8%E0%A5%8D%E0%A4%A5%E0%A5%8D%E0%A4%AF/page/17/
+			http://samudrapari.com/category/%E0%A4%B0%E0%A5%8B%E0%A4%9A%E0%A4%95/page/7/
+			http://samudrapari.com/category/editorial/page/8/
+			
+			http://samudrapari.com/rashifal/page/29/   //DRUMS AND ROLLS HERE
+			http://samudrapari.com/category/newspapers/page/182/
+			String url = "http://samudrapari.com/category/japan-news/page/"; //1-364
+			String url="http://www.newsnrn.com/category/america/page/";//1-73 HAS ISSUES
+			
+			http://xnepali.net/np/page/68
     	 */
     	//SINGLE PAGE
-    	for(int i=50;i<=3114;i++) {
-        	extractLinks(url+i);
-        	//extractLinks(url+i+"/");
-        	Thread.sleep(4000);
-        }
-    	
+
     	//MULTIPLE PAGES
     	//extractLinksFromFile("src/com/icodejava/research/nlp/sources/temp/temp.txt");
         
@@ -169,4 +175,24 @@ public class LinksExtractor {
         else
             return s;
     }
+    
+    /*
+     *       //String url = "http://ujyaaloonline.com/news/category/29/literature-art/page/";
+        String url="http://hamrakura.com/news-pages.php?_Id=16&per=200&p=";
+    	String url="http://www.onlinekhabar.com/content/news/page/";//HAS ISSUES
+    	String url="http://www.majheri.com/node?page=";//HAS ISSUES
+    	String url="http://setopati.com/raajneeti/page/";
+    	String url="http://www.ratopati.com/%E0%A4%A6%E0%A5%87%E0%A4%B6/page/1/"; //HAS ISSUES
+    	String url = "http://www.mysansar.com/category/news-views/page/"; //1-87
+    	String url = "http://www.mysansar.com/category/saturday-fiction/page/";//1-9
+    	String url = "http://tokyonepal.com/category/nepal-news/page/"; //1-387
+    	String url = "http://nepalipost.com/index/?catid=1&php=1&p="; // 1-769
+    	String url="http://www.samakalinsahitya.com/index.php?show=category&cat_id=24&page="; //1:0-11,2:0-6,3:0-28,4:0-9,5:0-23,8:0-2,10:0-3,11:0-4,13:0-10,16:0-3,17:0-1,18:0-1,20:0-1,24:0-2
+        
+    	String url="http://www.nagariknews.com/category/21?page="; //1-203
+    	String url = "http://www.nagariknews.com/category/22?page="; //1-94
+    	String url = "http://www.nagariknews.com/category/24?page="; //1-228
+    	String url="http://www.dainiknepal.com/section/latest-news/page/";//1-3114
+    	String url = "http://www.dainiknepal.com/section/views/page/";//1-90
+     */
 }

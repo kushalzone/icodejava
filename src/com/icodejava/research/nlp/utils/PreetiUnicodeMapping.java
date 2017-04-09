@@ -1,5 +1,9 @@
 package com.icodejava.research.nlp.utils;
 
+import java.io.IOException;
+
+import com.icodejava.blog.published.utilities.FileUtilities;
+
 public class PreetiUnicodeMapping {
 
     public static final String [] preetiCharacterSet = { "ç", "˜" , "." , "'m" , "]m" , "Fmf" , "Fm", ")" , "!" ,
@@ -35,9 +39,18 @@ public class PreetiUnicodeMapping {
 
 
     public static void main (String args []) {
-        String somePreetiText= "tkfO{+sf] sDKo\"6/df lk|tL kmG6 5" ;
-        System. out.println(convertToUnicode(somePreetiText));
+//        String somePreetiText= "tkfO{+sf] sDKo\"6/df lk|tL kmG6 5" ;
+//        System. out.println(convertToUnicode(somePreetiText));
         /*String someUnicodeMapping="तपाईंको कम्प्यूटरमा प्रिती फन्ट छ";*/
+        
+			String bigText = FileUtilities.readUTF8File("C:\\Users\\paudyals\\Desktop\\shabdakosh_full_text.txt").toString();
+			
+			String converted = convertToUnicode(bigText);
+			
+			System.out.println("Loaded");
+			FileUtilities.writeUTF8FileAppend("C:\\Users\\paudyals\\Desktop\\shabdakosh_full_text_converted.txt", converted);
+
+			System.out.println("Converted and Wrote to file");
 
     }
 
