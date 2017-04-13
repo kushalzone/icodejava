@@ -1,12 +1,22 @@
 Remove Duplicate Words From Database
+Remove Duplicate Sentences
 Create Stemmer Class
 Write a class to tag words by data classifier file
 Generate name, Roman pair from a file
 Complete Unicodization of Shabdakosh
-Complete Word fixer
+Complete Word fixer - to fix broken nepali words
 Clean Sentences
-Remove Duplciate Sentences
 Article to Neo4j
-
+Romanize and Save Words
+Fix Romanization Logic
 Calculate and store number of words in a sentence // updat this everytime a word clean batch is run.
 Name Tokenizer - Takes a name and splits into salute, first name, middle name, last name and pen name
+
+Extract data from Nepali to English Dictionary PDF
+
+Word Similarity
+Sentence Similarity
+
+select root words that are already not under word column (potential issues and confirmation)
+
+Word Linkage Extraction

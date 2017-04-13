@@ -1,4 +1,7 @@
 package com.icodejava.research.nlp.domain;
+
+import com.icodejava.research.nlp.NPTokenizer;
+
 /**
  * @author Kushal Paduyal
  * www.sanjaal.com | www.icodejava.com | www.inepal.org
@@ -130,6 +133,11 @@ public class Word {
 
 	public void setClassfication5(String classfication5) {
 		this.classfication5 = classfication5;
+	}
+	
+	public String getRootSplited() {
+		String root = NPTokenizer.getNepaliRootWord(word);
+		return word + "-->" + root + " + " + word.replaceAll(root, "");
 	}
 
 	public String toString() {

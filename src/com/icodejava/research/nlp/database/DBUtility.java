@@ -12,6 +12,15 @@ import java.sql.Statement;
 * @author sqlitetutorial.net
 */
 public class DBUtility {
+	
+	static { 
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
     public static final String DATABASE_URL = "jdbc:sqlite:C:/Users/paudyals/Desktop/NLP/nlpdb/npl2.db";
 

@@ -55,7 +55,9 @@ public enum CompoundWordEnding {
 			BHITRA("भित्र"),
 			BHITRAI("भित्रै"),
 			MADHYE("मध्ये"),
+			MADHYAKA("मध्येका"),
 			MADHYA("मध्य"),
+			MADHYEKA("मध्यका"),
 			MAJHA("माझ"),
 			MAJHAI("माझै"),
 			MATHI("माथि"),
@@ -66,6 +68,7 @@ public enum CompoundWordEnding {
 			MARPHATAI("मार्फतै"),
 			LAGAYATKA("लगायतका"),
 			LAGAYAT("लगायत"),
+			LAGAYATKO("लगायतको"),
 			MAI("मै"),
 			LAI("लाइ"),
 			LAEE("लाई"),
@@ -114,7 +117,13 @@ public enum CompoundWordEnding {
 			HARUSAMMA_1("हरुसम्म"),
 			HARUSAMMA_2("हरूसम्म"),
 			HARU_SANGA_1("हरुसंग"),
-			HARU_SANGA_2("हरूसंग"),
+			HARU_SANGA_2("हरूसँग"),
+			HARU_SANGA_3("हरुसंग"),
+			HARU_SANGA_4("हरुसँग"),
+			HARU_SANGA_KO_1("हरुसँगको"),
+			HARU_SANGA_KO_2("हरुसंगको"),
+			HARU_SANGA_KO_3("हरुसंगको"),
+			HARU_SANGA_KO_4("हरुसँगको"),
 			YOS_1("योस"),
 			YOS_2("योस्"),
 			JHAIN("झैं"),
@@ -126,8 +135,30 @@ public enum CompoundWordEnding {
 			TARFA("तर्फ"),
 			BEECH("बीच"),
 			VIHEEN("विहीन"),
+			KHALKO("खालको"),
+			SANGAKO("संगको"),
+			RAKHEKO("राखेको"),
+			BHITRAMA("भित्रमा"),
+			HARUKA("हरूका"),
+			TARFAKO("तर्फको"),
+			SAMMALE("सम्मले"),
+			BHITRAKA("भित्रका"),
 			DEKHI("देखि");
-
+	
+	//हरुलाई
+	//कहाँ
+	//पछिका
+	//देखि
+	//अनुसार
+	//भएको
+	//जति
+	//भर
+	//सम्बन्धी
+	//बिना
+	//हरुप्रती
+	
+	//भयो
+	//मात्रै
 	private String nepaliWordEnding;
 
 	CompoundWordEnding(String nepaliWordEnding) {

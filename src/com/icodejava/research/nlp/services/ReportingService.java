@@ -9,13 +9,13 @@ public class ReportingService {
 	
 	public static void main (String args []) {
 		
-/*		printRowCountStatus();
+		printRowCountStatus();
 		printCrawlStatus();
-		printUnreferencedWordReport();
-		printUnreferencedSentenceReport();
-		printArticleTitleInfo();*/
+		//printUnreferencedWordReport();
+		//printUnreferencedSentenceReport();
+		//printArticleTitleInfo();
 		
-		printCompoundWords();
+		//printCompoundWords();
 	}
 
 

@@ -45,6 +45,7 @@ public class WordsUnreferencedDB extends DBUtility {
 		//selectWithQuery("SELECT COUNT (DISTINCT WORD) FROM " + Tables.WORDS_UNREFERENCED);
 		
 		//selectCompoundWords("लाई");
+		selectRecordsNotMarkedAsCompoundRandom(10);
 		
 	}
 	
@@ -120,6 +121,27 @@ public class WordsUnreferencedDB extends DBUtility {
 	
 	public static List<Word> selectRecordsNotMarkedAsCompound(int limit) {
 		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE IS_COMPOUND_WORD IS NULL OR IS_COMPOUND_WORD='N' ORDER BY WORD ASC LIMIT " + limit ;
+
+		List<Word> words = new ArrayList<Word>();
+		
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				//System.out.println(rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" + rs.getString("VERIFIED"));
+				words.add(new Word(rs.getInt("ID"), rs.getString("WORD"), rs.getString("VERIFIED") ));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return words;
+	}
+	
+	public static List<Word> selectRecordsNotMarkedAsCompoundRandom(int limit) {
+
+		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE ID IN (SELECT ID FROM " + Tables.WORDS_UNREFERENCED +" WHERE IS_COMPOUND_WORD IS NULL OR IS_COMPOUND_WORD='N' ORDER BY RANDOM()  LIMIT " + limit + ") ORDER BY WORD ASC";
 
 		List<Word> words = new ArrayList<Word>();
 		
@@ -217,7 +239,31 @@ public class WordsUnreferencedDB extends DBUtility {
 	}
 	
 	public static List<Word> selectCompoundWords(String endsWith) {
-		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" where WORD LIKE '%"+endsWith+"'";
+		String sql = "SELECT ID, WORD, VERIFIED FROM " +  Tables.WORDS_UNREFERENCED +" where WORD LIKE '%"+endsWith+"'";
+
+		List<Word> words = new ArrayList<Word>();
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			
+
+			Word word = null;
+			while (rs.next()) {
+				word = new Word(rs.getInt(1), rs.getString(2), rs.getString(3));
+				//System.out.println(rs.getString(1)+" " + rs.getString(2));
+				words.add(word);
+			}
+			System.out.println("Found: " +  words.size() + " Records ending in --> " + endsWith);
+			//System.out.println(words); //THIS IS CAUSING MEMORY ISSUES
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return words;
+	}
+	
+	public static List<Word> selectCompoundWordsRootWordsNotExtracted(String endsWith) {
+		String sql = "SELECT ID, WORD, VERIFIED FROM " +  Tables.WORDS_UNREFERENCED +" where ROOT_WORD_EXTRACTED IS NULL AND WORD LIKE '%"+endsWith+"'";
 
 		List<Word> words = new ArrayList<Word>();
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
@@ -257,7 +303,7 @@ public class WordsUnreferencedDB extends DBUtility {
 			Word word = null;
 			while (rs.next()) {
 				word = new Word(rs.getInt(1), rs.getString(2), rs.getString(3));
-				System.out.println(rs.getString(1)+" " + rs.getString(2));
+				//System.out.println(rs.getString(1)+" " + rs.getString(2));
 				words.add(word);
 			}
 			if(words.size() > 0) {
@@ -292,8 +338,8 @@ public class WordsUnreferencedDB extends DBUtility {
 		return count;
 	}
 	
-	public static void selectRandomRecords(int limit) {
-		
+	public static List<Word> selectRandomRecords(int limit) {
+		List<Word> words = new ArrayList<Word>();
 		 //SELECT * FROM table WHERE id IN (SELECT id FROM table ORDER BY RANDOM() LIMIT x)
 		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE ID IN (SELECT ID FROM " + Tables.WORDS_UNREFERENCED +" ORDER BY RANDOM()  LIMIT " + limit + ") ORDER BY WORD ASC";
 
@@ -303,11 +349,14 @@ public class WordsUnreferencedDB extends DBUtility {
 				ResultSet rs = stmt.executeQuery(sql)) {
 
 			while (rs.next()) {
-				System.out.println(rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" + rs.getString("VERIFIED"));
+				words.add(new Word(rs.getInt("ID"), rs.getString("WORD"), rs.getString("VERIFIED") ));
+				//System.out.println(rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" + rs.getString("VERIFIED"));
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		
+		return words;
 	}
 	
 	public static List<Word> selectRecordsBetweenIds(int start, int end) {
@@ -536,6 +585,67 @@ public class WordsUnreferencedDB extends DBUtility {
 		
 	}
 	
+	
+	//updateWordTagRootWords
+	public static void updateWordTagRootWords(List<Word> words) {
+		
+		if(words == null || words.isEmpty()) {
+			return;
+		}
+		
+		int count=0;
+		for(Word word:words) {
+			
+			if(count%1000 == 0 ) {
+				System.out.println("UPDATED ROOT WORDS: "+ count + " of " + words.size());
+			}
+			if(word.getWord() != null && word.getRootWord() != null) {
+				
+				updateWordRootWordAndTag(word);
+			}
+			
+			count++;
+		}
+		
+	}
+	
+	/**
+	 * This method updates the value of a ROOT_WORD AND sets value of ROOT_WORD_EXTRATED TO Y
+	 * 
+	 * @param word
+	 */
+	private static void updateWordRootWordAndTag(Word word) {
+		
+		if(word.getId() < 1 || word.getWord() == null || word.getRootWord() == null) {
+			return;
+		}
+		
+		String sql = "UPDATE " + Tables.WORDS_UNREFERENCED + " SET ROOT_WORD=\""+word.getRootWord()+"\", ROOT_WORD_EXTRACTED= \"Y\" WHERE ID=" +word.getId();
+		//System.out.println(sql);
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				//PreparedStatement pstmt = conn.prepareStatement(sql)
+				Statement stmt = conn.createStatement();)
+				{
+				int result= stmt.executeUpdate(sql);
+
+//			pstmt.setString(1, word.getRootWord());
+//			pstmt.setString(2, "Y");
+//			pstmt.setInt(3, word.getId());
+//			int result = pstmt.executeUpdate();
+
+			if(result > 0) {
+				//System.out.println("Successfully updated word");
+			} else {
+				System.out.println("Could not update the word. Make sure the ID exists or there are no other issues");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 	public static void cleanWords() {
 		List<Word> words = selectRecordsBetweenIds(0, 1000000);
 		//List<Word> words = selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%à%'");

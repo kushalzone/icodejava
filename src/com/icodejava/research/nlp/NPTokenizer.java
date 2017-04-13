@@ -104,12 +104,13 @@ public class NPTokenizer {
     	for (CompoundWordEnding dir : CompoundWordEnding.values()) {
     		 String cwe = dir.getNepaliWordEnding();
     		 
-    		 if(compoundWord.endsWith(cwe)) {
+    		 if(compoundWord.endsWith(cwe) && compoundWord.length() > cwe.length()) {
     		  compoundWord = compoundWord.replaceAll(cwe, "");
     		 }
     		  
     		}
-    	//System.out.println(compoundWord);
+    	
+    	compoundWord = compoundWord.trim();
     	
     	return compoundWord;
     }
@@ -122,6 +123,9 @@ public class NPTokenizer {
         word = word.replaceAll("[\t००–-—-…_a-zA-Z0-9@#&\\$%:,;=->~“”‘’!। ||/\\+\\^\\*\\'\"\\.`\\(\\)\\[\\]\\{\\}\\.\\?\\\\]*", "");
         word = word.replaceAll("[०-९]", ""); //remove nepali numbers
         word = word.replaceAll("¥", "र्");
+        word = word.replaceAll("©", "");
+        word = word.replaceAll(">>", "");
+        //word = word.replaceAll("", replacement)
         
 		if ("÷".equalsIgnoreCase(word)) {
 			word = "";
@@ -154,7 +158,9 @@ public class NPTokenizer {
         sentence = sentence.replaceAll("@", "");
         sentence = sentence.replaceAll("\"", "");
         sentence = sentence.replaceAll("\'", "");
-        sentence = sentence.replaceAll("[ a-zA-Z0-9]{1,}[\\(\\)\\+\\–\\*’,-\\.%;:=]{0,}", " ");//TEST
+        sentence = sentence.replaceAll("©", "");
+        sentence = sentence.replaceAll(">>", "");
+        //sentence = sentence.replaceAll("[ a-zA-Z0-9]{1,}[\\(\\)\\+\\–\\*’,-\\.%;:=]{0,}", " ");//TEST
         sentence = sentence.trim().replaceAll("( )+", " ");//remove multiple spaces
         sentence = sentence.trim();
         

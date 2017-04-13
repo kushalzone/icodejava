@@ -11,12 +11,13 @@ import com.icodejava.research.nlp.database.ArticlesDB;
 import com.icodejava.research.nlp.database.WebsitesDB;
 
 public class WebCrawlService {
-	public static final int LIMIT_FROM_EACH_DOMAIN=500;
+	public static final int LIMIT_FROM_EACH_DOMAIN=5000;
 	public static void main (String args []) {
 		//fetchURLs(1);
-		crawlSites(LIMIT_FROM_EACH_DOMAIN);
-		//crawlSitesForDomain("http://www.samakalinsahitya.com");
+		//crawlSites(LIMIT_FROM_EACH_DOMAIN);
+		//crawlSitesForDomain("https://ne.wikipedia.org");
 		//crawl("http://www.samakalinsahitya.com/index.php?show=detail&art_id=100");
+		WordsUnreferencedService.processUnreferencedWords(10000);
 	}
 
 	private static void crawlSitesForDomain(String domain) {
@@ -24,7 +25,7 @@ public class WebCrawlService {
 			startCrawl(site);
 		}
 		
-		UnreferencedWordsService.processUnreferencedWords(10000);
+		//WordsUnreferencedService.processUnreferencedWords(10000);
 	}
 
 	public static void crawlSites(final int limitForEachDomain) {
@@ -51,7 +52,7 @@ public class WebCrawlService {
 			
 			System.out.println("Crawling site "  + site + " took " + (end-start)/100 + "ms");
 			
-			Thread.sleep(5000); //Sleep 5 Seconds
+			Thread.sleep(4000); //Sleep 5 Seconds
 			
 		} catch (Exception e) {
 			System.out.println("Error Occurred while crawling "  + site);

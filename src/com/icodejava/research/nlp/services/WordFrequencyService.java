@@ -7,7 +7,6 @@ public class WordFrequencyService {
 	}
 
 	private static void extractWordFrequencyFromVerifiedSentences() {
-		// TODO Auto-generated method stub
 		
 	}
 
