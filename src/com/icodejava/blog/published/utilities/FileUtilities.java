@@ -94,7 +94,7 @@ public class FileUtilities {
             String line;
             while ((line = in.readLine()) != null) {
  
-                System.out.println(line);
+                //System.out.println(line);
                 content += line;
                  
  
@@ -172,6 +172,31 @@ public class FileUtilities {
     		} catch (IOException e) {
     		    e.printStackTrace();
     		}
+    }
+    
+    /**
+     * Reads a file as a list of lines.
+     * Trims the line
+     * Writes the list back the file
+     * @param fileName
+     */
+    public static void trimLineSpacesInFile(String fileName) {
+    	List<String> lines = readUTF8FileAsList(fileName);
+    	String content = new String();
+    	int lineCount = 0;
+    	for(String line: lines) {
+    		if(lineCount == 0) {
+    			content = line.trim();
+    		} else{
+    			content +="\n"+line.trim();
+    		}
+    		
+    		lineCount++;
+    	}
+    	
+    	writeUTF8File(fileName, content);
+    	
+    	System.out.println("Successfully Trimmed Line Spaces in file: " + fileName);
     }
     
     
