@@ -26,7 +26,7 @@ public class WordsUnreferencedService {
 
 		extractAndTagRootWords(); // Multiple
 
-		// tagCompoundWords(HOW_MANY_WORDS);
+		 tagCompoundWords(HOW_MANY_WORDS);
 		// processUnreferencedWords(10000);
 		// processWordsFromFile("src/com/icodejava/research/nlp/sources/other/misc_words.txt");
 
@@ -63,7 +63,8 @@ public class WordsUnreferencedService {
 				  CompoundWordEnding.LAGAYAT.getNepaliWordEnding(),
 				  CompoundWordEnding.LAGAYATKA.getNepaliWordEnding(),
 				  CompoundWordEnding.LAGAYATKO.getNepaliWordEnding(),
-				  CompoundWordEnding.PURNA.getNepaliWordEnding(),
+				  CompoundWordEnding.PURNA_1.getNepaliWordEnding(),
+				  CompoundWordEnding.PURNA_2.getNepaliWordEnding(),
 				  CompoundWordEnding.PASCHAT_1.getNepaliWordEnding(),
 				  CompoundWordEnding.PASCHAT_2.getNepaliWordEnding(),
 				  CompoundWordEnding.PASCHAT_3.getNepaliWordEnding(),
@@ -159,6 +160,25 @@ public class WordsUnreferencedService {
 		
 		
 	}
+	
+	public static void romanizeAndSaveWords(List<Word> words) {
+		
+		for(Word word: words) {
+			if("***SHOULD_ROMANIZE".equalsIgnoreCase(word.getValueRomanizedISOStandard())){
+
+				word=WordsUnreferencedDB.selectWordByID(word.getId());
+				if(word != null && word.getWord() != null) {
+					word.setValueRomanizedISOStandard(DevanagariUnicodeToRomanEnglish.convertUnicodeNepaliToRomanizedEnglish(word.getWord()));
+					
+					WordsUnreferencedDB.updateRomanizationISO(word.getId(), word.getValueRomanizedISOStandard());
+				}
+			}
+		}
+		
+		
+	}
+	
+	
 
 	/**
 	 * Prints all compound words.

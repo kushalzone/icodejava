@@ -120,7 +120,7 @@ public class NPTokenizer {
         word = word.trim();
         word = word.replace("\u00A0",""); //remove non breaking spaces
         word = word.trim().replaceAll("( )+", " ");//remove multiple spaces
-        word = word.replaceAll("[\t००–-—-…_a-zA-Z0-9@#&\\$%:,;=->~“”‘’!। ||/\\+\\^\\*\\'\"\\.`\\(\\)\\[\\]\\{\\}\\.\\?\\\\]*", "");
+        word = word.replaceAll("[\t००–-—-�•�…_a-zA-Z0-9@#&\\$%:,;=->~“”‘’!। ||/\\+\\^\\*\\'\"\\.`\\(\\)\\[\\]\\{\\}\\.\\?\\\\]*", "");
         word = word.replaceAll("[०-९]", ""); //remove nepali numbers
         word = word.replaceAll("¥", "र्");
         word = word.replaceAll("©", "");
@@ -171,7 +171,7 @@ public class NPTokenizer {
 	public static String cleanTitles(String title) {
 		title = title.trim();
 		//title = title.replaceAll("  ", " ").replaceAll(" ", ""); //do it twice
-		title = title.replaceAll("[००–-—-…_a-zA-Z0-9@#&\\$%||/\\+\\^\\*\\.]*", "");
+		title = title.replaceAll("[००–-—-�•�…_a-zA-Z0-9@#&\\$%||/\\+\\^\\*\\.]*", "");
 		title=title.trim();
 		return title;
 	}
@@ -316,9 +316,10 @@ public class NPTokenizer {
 
 	
 	public static String fixMalformedWord(String string) {
-		/*System.out.println(string + " " + string.length());
-		NPTokenizer.printChracters(string);
-		*/
+		//SET_OF_MATRAS = "ा ि ी ु ू ृ े ै ो ौ ं : ँ ॅ्" 
+//		System.out.println(string + " " + string.length());
+//		NPTokenizer.printChracters(string);
+		
 		if(string.indexOf('ि') == 0 && string.length() > 1) {
 			System.out.println("Fixing: " + string);
 			string=swap(string, 0,1);
@@ -326,10 +327,6 @@ public class NPTokenizer {
 		}
 		
 		string = string.replaceAll("अो", "ओ");
-		
-		
-		//System.out.println(string + " " + string.length());
-		//NPTokenizer.printChracters(string);
 		return string;
 	}
 	
@@ -351,6 +348,8 @@ public class NPTokenizer {
 	 * Detects Grammatically incorrect Nepali Words
 	 * @param string
 	 * @return
+	 * 
+	 * Currently cant detect: अाऊन
 	 */
 	public static boolean isMalformedWord(String string) {
 
@@ -364,7 +363,7 @@ public class NPTokenizer {
 				malformedCount=0; //reset
 			}
 			
-			if(malformedCount>=3) {
+			if(malformedCount>=2) {
 				isMalformed = true;
 				break;
 			}

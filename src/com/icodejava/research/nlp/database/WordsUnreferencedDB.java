@@ -99,6 +99,25 @@ public class WordsUnreferencedDB extends DBUtility {
 		}
 	}
 	
+	public static Word selectWordByID(int id) {
+		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE ID="+id+ " ORDER BY WORD ASC";
+
+		Word word = new Word(id, null, null);
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			if (rs.next()) {
+				System.out.println(rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" + rs.getString("VERIFIED"));
+				word.setWord(rs.getString("WORD"));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return word;
+	}
+	
 	public static List<Word> selectRecordsNotMarkedAsCompound() {
 		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE IS_COMPOUND_WORD IS NULL OR IS_COMPOUND_WORD='N' ORDER BY WORD ASC";
 
@@ -698,6 +717,28 @@ public class WordsUnreferencedDB extends DBUtility {
 				deleteRecordsByID(word.getId());
 				System.out.println("Deleted " + word);
 			}
+		}
+		
+	}
+
+	public static void updateRomanizationISO(int id, String valueRomanizedISOStandard) {
+		String sql = "UPDATE " + Tables.WORDS_UNREFERENCED + " SET WORD_ROMANIZED=? WHERE ID=?";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, valueRomanizedISOStandard);
+			pstmt.setInt(2, id);
+			int result = pstmt.executeUpdate();
+
+			if(result > 0) {
+				System.out.println("Successfully updated Romanization " + valueRomanizedISOStandard );
+			} else {
+				System.out.println("Could not update the word. Make sure the ID exists or there are no other issues");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 	}

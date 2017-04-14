@@ -12,13 +12,16 @@ public class NPTokenizerTest {
 		//textReplaceTest();
 		//cleanBadExamplesTest();
 		//cleanSentences();
-		//System.out.println(NPTokenizer.cleanWordToken("÷अनौपचारिक"));
-		String str;
-		System.out.println(str = NPTokenizer.cleanSentence(",        ,       .        ,    -     (     -  ).  ’         (      ) ,                    .            .        –  .                ’   ’  मन परे हरियो नपरे रातो"));
-		System.out.println(str = NPTokenizer.cleanSentence(",               ’       .                                    +                 + +  +          ,          =   मन परे हरियो नपरे रातो,"));
-		System.out.println(str= NPTokenizer.cleanSentence(",         ,               .                                                   ,           .                .        .            ,                                    ,            ’                     ****      :  मन परे हरियो नपरे रातो"));
+		//System.out.println(NPTokenizer.cleanWordToken("िदपक"));
+		System.out.println(NPTokenizer.isMalformedWord("अाऊन"));
+//		String str;
+//		System.out.println(str = NPTokenizer.cleanSentence(",        ,       .        ,    -     (     -  ).  ’         (      ) ,                    .            .        –  .                ’   ’  मन परे हरियो नपरे रातो"));
+//		System.out.println(str = NPTokenizer.cleanSentence(",               ’       .                                    +                 + +  +          ,          =   मन परे हरियो नपरे रातो,"));
+//		System.out.println(str= NPTokenizer.cleanSentence(",         ,               .                                                   ,           .                .        .            ,                                    ,            ’                     ****      :  मन परे हरियो नपरे रातो"));
 //		System.out.println(str= NPTokenizer.cleanSentence(""));
 		//NPTokenizer.printChracters(str);
+		
+		
 		
 		
 	}
@@ -30,13 +33,15 @@ public class NPTokenizerTest {
 		//String text = "संशाेधन प्रस्तावकाे विराेध गरेकाे भन्दै पूर्वप्रधानमन्त्री केपी ओलीको पुत्ला दहन";
 		//पाैडेलकाे
 		//दाह््िर
-		//औपचारिक÷अनौपचारिक
+		//औपचारिक÷अनौपचारिक //DONE
 		//हिलकोे
 		//हैन माओवादीकै
 		//सम्झ्ानाकै
 		//पुगियाे
-		//िदपक
+		//िदपक //DONE
+		//जनसंंगठनहरुको
 		// अती भयो है यो चहीं
+		//भरिपर्ूण्ा
 		
 		//String text="    आधुनिक";
 		String text = "नपु¥याउँदा"; //नपुर्याउँदा
