@@ -10,3 +10,9 @@ select * from words_unreferenced where word like '%की'
 SELECT IS_COMPOUND_WORD, COUNT(*) FROM WORDS_UNREFERENCED GROUP BY IS_COMPOUND_WORD
 
 SELECT IS_COMPOUND_WORD, COUNT(*) FROM WORDS_UNREFERENCED GROUP BY IS_COMPOUND_WORD AND NOT (WORD LIKE '%मा' OR WORD LIKE '%की' OR WORD LIKE '%ले' OR WORD LIKE '%को')
+
+select * from words_unreferenced where word_romanized is not null
+
+select sentence, count(*) from sentence_unreferenced group by sentence having count(*) > 1 order by 2 desc
+
+delete from sentence_unreferenced where sentence='////'

@@ -17,19 +17,26 @@ public class WordsUnreferencedService {
 
 	public static final int HOW_MANY_WORDS = 1000000;
 
-	public static void main(String args[]) {
+	public static void main(String args[]) throws InterruptedException {
 		// printCompoundWords();
 		// printCompoundWordsNotTagged();
 		// romanizeAndSaveWords(HOW_MANY_WORDS_TO_ROMANIZE);
 		// WordsUnreferencedDB.selectCompoundWordsNotTagged("योस्");
 		// WordsUnreferencedDB.selectCompoundWordsNotTagged("मै");
 
-		extractAndTagRootWords(); // Multiple
+		//extractAndTagRootWords(); // Multiple
 
-		 tagCompoundWords(HOW_MANY_WORDS);
+		 //tagCompoundWords(HOW_MANY_WORDS);
 		// processUnreferencedWords(10000);
 		// processWordsFromFile("src/com/icodejava/research/nlp/sources/other/misc_words.txt");
+		 
+		 removeDuplication();
 
+	}
+
+	private static void removeDuplication() throws InterruptedException {
+		WordsUnreferencedDB.removeDuplicateWords();
+		
 	}
 
 	/**

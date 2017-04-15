@@ -432,7 +432,7 @@ public class WordsUnreferencedDB extends DBUtility {
 
 			pstmt.executeUpdate();
 
-			System.out.println("Successfully Deleted record: " + id);
+			//System.out.println("Successfully Deleted record: " + id);
 
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -741,6 +741,83 @@ public class WordsUnreferencedDB extends DBUtility {
 			e.printStackTrace();
 		}
 		
+	}
+
+	public static void removeDuplicateWords() throws InterruptedException {
+		//Query Database And get a list of duplicate words
+		String sql = "select word, count(*) from " + Tables.WORDS_UNREFERENCED + " group by word having count(*) > 1";
+		List<String> wordsList = new ArrayList<String> ();
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				wordsList.add(rs.getString("WORD"));
+			}
+			
+			System.out.println("Total " + wordsList.size() + " words found with duplicate entries" );
+			Thread.sleep(5000); //sleeping for 5 seconds to allow change of mind.
+			
+			for(String word: wordsList) {
+				
+				//Fetch the IDs of the word
+				List<Word> words = selectWordsByWordValue(word);
+				
+				if(words.size() > 1) { //duplicate
+					
+					for(int i=1; i< words.size(); i++) { //starting from 1 - don't delete the first record
+						
+						//Delete the word
+						if(words.get(i).getId() > 0) {
+						 
+							//System.out.println("Record " +  words.get(i).getId() +" "  +  words.get(i).getWord() + " will be marked for deletion");
+							deleteRecordsByID(words.get(i).getId());
+						}
+					}
+				}
+				
+				
+			}
+			//The fetch the IDs
+			
+			
+			//Then delete all but one
+			
+			
+			
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		
+	}
+
+	/**
+	 * Queries the database and gets a list of words by Word Value
+	 * @param wordValue
+	 * @return
+	 */
+	private static List<Word> selectWordsByWordValue(String wordValue) {
+		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE WORD=\""+wordValue+ "\" ORDER BY WORD ASC";
+
+		List<Word> words = new ArrayList<Word>();
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				//System.out.println("Found: " + rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" );
+				
+				Word word = new Word(rs.getInt("ID"), rs.getString("WORD"), null);
+				words.add(word);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		//System.out.println("Found: " + words.size() + " records of " +  wordValue);
+		return words;
 	}
 
 

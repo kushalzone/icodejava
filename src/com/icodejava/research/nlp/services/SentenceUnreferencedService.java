@@ -5,15 +5,54 @@ import java.util.List;
 import com.icodejava.research.nlp.NPTokenizer;
 import com.icodejava.research.nlp.database.ArticlesDB;
 import com.icodejava.research.nlp.database.SentencesUnreferencedDB;
+import com.icodejava.research.nlp.database.WordsUnreferencedDB;
 import com.icodejava.research.nlp.domain.Article;
 import com.icodejava.research.nlp.domain.Sentence;
+import com.icodejava.research.nlp.utils.TextUtils;
 
 public class SentenceUnreferencedService {
 	
-	public static void main (String args []) {
+	public static void main (String args []) throws InterruptedException {
 		
-		extractUnreferencedSentencesFromArticles(20000);
+		//extractUnreferencedSentencesFromArticles(20000);
 		//cleanSentences(2000000);
+		updateWordCount(200000);
+		
+		removeDuplication();
+		
+	}
+	
+	private static void removeDuplication() throws InterruptedException {
+		SentencesUnreferencedDB.removeDuplicateWords();
+		
+	}
+
+	private static void updateWordCount(int limit) {
+		
+		//OPERATE 5000 SETENCES AT A TIME
+		int batch = limit / 5000 + 1;
+		
+		for(int i=0;i<batch; i ++ ) {
+		System.out.println("Processing Batch: " + i + " out of " +  batch);	
+			//Bring records
+			List<Sentence> sentences = SentencesUnreferencedDB.selectRecordsWithNoWordCount(5000);
+			
+			calculateWordCount(sentences);
+			
+			SentencesUnreferencedDB.updateSentencesWordCount(sentences);
+			
+			
+			
+		}
+		
+	}
+
+	private static void calculateWordCount(List<Sentence> sentences) {
+		for(Sentence sentence: sentences) {
+			sentence.setWordCount(TextUtils.countWords(sentence.getValue()));
+			//System.out.println("Word Count " + sentence.getWordCount());
+		}
+		
 	}
 
 	private static void extractUnreferencedSentencesFromArticles(int articleLimit) {

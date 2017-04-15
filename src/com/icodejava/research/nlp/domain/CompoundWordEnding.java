@@ -160,6 +160,16 @@ public enum CompoundWordEnding {
 	YOS_1("योस"),
 	YOS_2("योस्"),
 	YUKTA("युक्त");
+	
+	/*
+Yatra
+Bhari
+Bhayeko
+Bhayeki
+Muni
+चोटिमा
+Patak
+	 */
 
 	private String nepaliWordEnding;
 
