@@ -10,6 +10,7 @@ package com.icodejava.research.nlp.utils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import com.icodejava.blog.published.utilities.FileUtilities;
 import com.icodejava.research.nlp.NPTokenizer;
@@ -56,9 +57,10 @@ public class DevanagariUnicodeToRomanEnglish {
             "क्ष", "क्षा", "क्षि", "क्षी", "क्षु", "क्षू", "क्षे", "क्षै", "क्षो", "क्षौ", "क्षं", "क्ष:","क्ष्",
             "त्र", "त्रा", "त्रि", "त्री", "त्रु", "त्रू", "त्रे", "त्रै", "त्रो", "त्रौ", "त्रं", "त्र:","त्र्",
             "ज्ञ", "ज्ञा", "ज्ञि", "ज्ञी", "ज्ञु", "ज्ञू", "ज्ञे", "ज्ञै", "ज्ञो", "ज्ञौ", "ज्ञं", "ज्ञ:","ज्ञ्",
-            //extra
-            "ऋ","यूँ"
+            //special cases
+            "ऋ","यूँ", "ः"
   });
+	
   static List<String> romanizedEnglishSet = Arrays.asList(new String[]{
             "1","2","3","4","5","6","7","8","9","0",
             "a", "ā","i", "ī", "u", "ū","ē","ai","ō","au","aṁ","a:","aṅ",
@@ -99,34 +101,15 @@ public class DevanagariUnicodeToRomanEnglish {
             "tra", "trā", "tri", "trī", "tru", "trū", "trē", "trai", "tro", "trau", "trṁ", "tra:","tr",
             "gya", "gyā", "gyi", "gyī", "gyu", "gyū", "gyē", "gyai", "gyo", "gyau", "gyṁ", "gya:","gy",
             //extra
-            "r̥","yūm̐"
+            "r̥","yūm̐", ":"
 
   });
 	
 	public static String set_of_matras = "ा ि ी ु ू ृ े ै ो ौ ं : ँ ॅ्" ;
 	
 	public static void main(String args []) {
-		//convertUnicodeNepaliToRomanizedEnglish("२२३४५१७६८९०");
-		//convertUnicodeNepaliToRomanizedEnglish("क ख ग घ ङ");
 		
-		//convertUnicodeNepaliToRomanizedEnglish("मेरो नाम कुशल हो");//नट वोर्किंग
-		/*convertUnicodeNepaliToRomanizedEnglish("बिश्वास");
-		convertUnicodeNepaliToRomanizedEnglish("राष्ट्रिय समिक्षा");
-		convertUnicodeNepaliToRomanizedEnglish("कुखुरासँग कृष्ण हिँडेकी अर्गनाइजेसनकै आलुलाई ह्यांगरलाई");*/
-		//convertUnicodeNepaliToRomanizedEnglish("अशंतुस्त");
-/*		
-		System.out.println();
-		
-		for(Character c: new String("अशंतुस्त").toCharArray() ) {
-			System.out.println(c);
-		}*/
-		// Transformed: ashṁtust --> if half word, last word should not be half.
-		
-		//convertUnicodeNepaliToRomanizedEnglish("मेरो नाम कुशल हो . म  हलो कुटो, जुत्ता र  शिक्षा त्रिशुल मा बिश्वास गर्छुः");//नट वोर्किंग
-		
-		//System.out.println(unicodeSet.indexOf("रो"));
-		//System.out.println(romanizedEnglishSet.get(330));
-		
+
 //		NPTokenizer.isMalformedWord("भनेझ्ैं");
 //		NPTokenizer.isMalformedWord("भनेझैं");
 //		
@@ -135,14 +118,6 @@ public class DevanagariUnicodeToRomanEnglish {
 		
 //      System.out.println("Unicode Set Length " + unicodeSet.size());
 //
-//       convertUnicodeNepaliToRomanizedEnglish("मुखकृति गृष्म हृदय तृप्ति दृश्य संग सँग सङ्ग सृजना श्रीजना");
-     convertUnicodeNepaliToRomanizedEnglish("घृ नृ ट्र वृत बृत मृत् लृत जृत झृत झ्रित य्र ठ्रित थृत पृ फ्री भृत वृत्त ब्रित्ता पिठ्यूँ सिद्दिचरण माइसंसार निदाउँदा अँगुलो");
-//       convertUnicodeNepaliToRomanizedEnglish("कुखुरासँग कृष्ण हिँडेकी अर्गनाइजेसनकै आलुलाई ह्यांगरलाई");
-		
-//		convertUnicodeNepaliToRomanizedEnglish("बझाङमा");
-//		convertUnicodeNepaliToRomanizedEnglish("भलिबलको");
-	
-		
 		//System.out.println("भनेझ्ैं".replaceAll("् ै ं ", " ै ं "));
 		
 		//conertFile("C:\\temp\\np4.txt");
@@ -150,59 +125,92 @@ public class DevanagariUnicodeToRomanEnglish {
 
 
 	
-    private static void sanityCheck() {
+    public static void sanityCheck() {
 
         for(int i = 0; i < romanizedEnglishSet.size(); i ++) {
             System.out.println(romanizedEnglishSet.get(i) + "-->" + unicodeSet.get(i));
         }
+        
+        
 
     }
     
-    private static void conertFile(String fileName) {
+    private static void convertFile(String fileName) {
 
         String str = FileUtilities.readUTF8File(fileName);
 
         System.out.println("Original: " + str );
 
-        System.out.println("\n\nConvereted" + convertUnicodeNepaliToRomanizedEnglish(str));
+        System.out.println("\n\nConvereted" + convertSentence(str));
 
     }
 
 
+	public static String convertSentence(String sentence) {
 
-	public static String convertUnicodeNepaliToRomanizedEnglish(String string) {
-		if(string!=null) {
-			string = string.trim();
+		StringTokenizer tokenizer = new StringTokenizer(sentence);
+
+		String constructedSentence = "";
+		int count = 0;
+		while (tokenizer.hasMoreTokens()) {
+			if (count == 0) {
+				constructedSentence += convertWord(tokenizer.nextToken());
+			} else {
+				constructedSentence += " " + convertWord(tokenizer.nextToken());
+			}
+			
+			count++;
+		}
+
+		return constructedSentence;
+
+	}
+
+	public static String convertWord(String word) {
+		if(word!=null) {
+			word = word.trim();
 		}
 		String transformed = "";
 		
 		String convert = "";
 		boolean waitToDoTranslation = false;
 		boolean potentialProblem = false;
-		char upcoming = 0;
-		for (int i=0; i<string.length(); i++) {
-			convert +=  string.charAt(i);
+		for (int i=0; i<word.length(); i++) {
+			char upcoming = 0;
+			convert +=  word.charAt(i);
 			//Peek ahead
 			
-			if(i+1 < string.length()) {
-				upcoming = string.charAt(i+1);
-				//System.out.println((int)upcoming);
+			if(i+1 < word.length()) {
+				upcoming = word.charAt(i+1);
 			}
 			
-			//System.out.println("convert: " + convert + " chartAt(i) " + string.charAt(i) + "Upcoming: " + upcoming + " " + (int)upcoming + " Equality: " + (upcoming == 32));
+			int upcomingInt = (int) upcoming;
+            boolean isUpcomingNasal = (upcomingInt==2305 || upcomingInt==2306);
 			
+				waitToDoTranslation = (i+1 < word.length()) 
+						&& set_of_matras.indexOf(upcoming+"") >= 0 
+						&& !(upcoming==32)
+						&& !isUpcomingNasal;
 			
-			//if(!(upcoming==32)) {
-				waitToDoTranslation = (i+1 < string.length()) && set_of_matras.indexOf(upcoming+"") >= 0 && !(upcoming==32);
-			//}
-			//waitToDoTranslation =  !upcoming.equals("");
-			
-			//System.out.println((int)c + " " +  c);
 			if (!waitToDoTranslation) {
-				if (unicodeSet.indexOf(convert) > 0) {
+				if (unicodeSet.indexOf(convert) >= 0) {
 					int index = unicodeSet.indexOf(convert);
 					// System.out.println("Found at: " + index);
 					transformed += romanizedEnglishSet.get(index);
+					
+                    if(isUpcomingNasal) {
+                        //TODO: When applied to a semivowel (y, r, l, ḷ or v), in contrast to its application to a vowel,
+                        //candrabindu is placed before the semivowel. For example, सय्ँयन्ता is written sa:m̐yyantā and not saym̐yantā.
+                        if (upcomingInt == 2305) {
+                            transformed+= "m̐";
+                            i=i+1; //skip since we already applied
+                            //upcomingInt = 0; //reset
+                        } else if (upcomingInt == 2306) {
+                            transformed+= "ṁ";
+                            //skip since we already applied
+                            i=i+1;
+                        }
+                    }
 
 				} else {
 					transformed += convert;
@@ -218,103 +226,115 @@ public class DevanagariUnicodeToRomanEnglish {
 		}
 		
 		//IF WORDS END IN LA, RA, DA, KA, remove the A. Some exceptions apply.
-		if(!(string.charAt(string.length() - 2) == '्')) {
+		if(!(word.length() > 2 && word.charAt(word.length() - 2) == '्')) {
 		
-			if(	transformed.endsWith("ka")
-					|| transformed.endsWith("kha")
-					|| transformed.endsWith("ga")
-					|| transformed.endsWith("gha")
-					|| transformed.endsWith("ṅa")
-					|| transformed.endsWith("cha") //TODO: Exception kharcha
-					|| transformed.endsWith("ja")
-					|| transformed.endsWith("ṭa")
-					|| transformed.endsWith("ṭha")
-					|| transformed.endsWith("pa")
-					|| transformed.endsWith("bha")
-					|| transformed.endsWith("ma")
-					|| transformed.endsWith("ra") //TODO: EXCEPTION KHERA, NIRA, TIRA, JAMERA, KSHETRA
-					|| transformed.endsWith("sa")
-					|| transformed.endsWith("sha")
-					|| transformed.endsWith("ba")
-					|| transformed.endsWith("va")
-					|| transformed.endsWith("ta")
-					|| transformed.endsWith("tha")
-					||transformed.endsWith("la") 
-					|| transformed.endsWith("da") 
-					|| transformed.endsWith("dha") 
-					
-				
-					
-					
-					) {
-				transformed = transformed.substring(0, transformed.length() -1);
-			}
+			transformed = applyEndingExceptionRules(transformed);
 			
-			if(transformed.endsWith("ṅamā")) {
-				transformed = transformed.substring(0, transformed.lastIndexOf("ṅamā")) + "ṅmā";
-			}
-			
-			if(transformed.endsWith("lako")) {
-				transformed = transformed.substring(0, transformed.lastIndexOf("lako")) + "lko";
-			}
-			
-			if(transformed.endsWith("lakā")) {
-				transformed = transformed.substring(0, transformed.lastIndexOf("lakā")) + "lkā";
-			}
-			
-			if(transformed.endsWith("sako")) {
-				transformed = transformed.substring(0, transformed.lastIndexOf("sako")) + "sko"; //e.g. सुट्केसको  > suṭkēsako > suṭkēsko 
-			}
-			
-			if(transformed.endsWith("ramā")) {
-				transformed = transformed.substring(0, transformed.lastIndexOf("ramā")) + "rmā";
-			}
-			
-			if(transformed.endsWith("lamā")) {
-				transformed = transformed.substring(0, transformed.lastIndexOf("lamā")) + "lmā"; //e.g. दालमा > dālamā > dālmā 
-			}
+			transformed = applyPreEndingExceptionRules(transformed);
 
-			
-			if(transformed.endsWith("ṇakā")) { //TODO: process exception for Krishnaka
-				transformed = transformed.substring(0, transformed.lastIndexOf("ṇakā")) + "ṇkā"; //e.g. कारणका  > kāraṇakā > kāraṇkā
-			}
-			
-			if(transformed.endsWith("valē")) {
-				transformed = transformed.substring(0, transformed.lastIndexOf("valē")) + "vlē"; //e.g. गरिवले > garivalē > garivlē
-				
-			}
-			
-			if(transformed.endsWith("palē")) {
-				transformed = transformed.substring(0, transformed.lastIndexOf("palē")) + "plē"; //e.g. चित्ररुपले  > chitrarupalē > chitraruplē
-				
-			}
-			
-			//Need to fix the following
-			//पालुङकी - Romanized: + pāluṅakī 
-			//खलकले - Romanized: + khalakalē 
-			
-			
-	//		3उँḍāko 
-			//मुंनकर्मी - Romanized: + मुंnakarmī 
-			//छिँटा - Romanized: + छिँṭā 
-			//ओंठ - Romanized: + ओंṭh 
-			//नभाँचिने - Romanized: + naभाँchinē 
-			//पिंकी - Romanized: + पिंkī 
-//			/साँचोझुठो - Romanized: + साँchojhuṭho 
-			//हजारौँका - Romanized: + hajāरौँkā 
-			//हुँdāsammamā 
-			//पठाउँछौं - Romanized: + paṭhāउँछौं 
-			//बडादशैं - Romanized: + baḍādaशैं
-			// गोँगबु - Romanized: + गोँgabu 
-			//बाँसबारीको - Romanized: + बाँsabārīko 
 		}
 
-		//System.out.println("Original: " + string + " Transformed: " + transformed);
+		System.out.println("Original: " + word + " Transformed: " + transformed);
 
 		return transformed;
 		
 	
 		
+	}
+
+
+
+	private static String applyEndingExceptionRules(String transformed) {
+		
+		if(transformed.length() < 3) {
+			return transformed;
+		}
+		
+		if(	transformed.endsWith("ka")
+				|| transformed.endsWith("kha")
+				|| transformed.endsWith("ga")
+				|| transformed.endsWith("gha")
+				|| transformed.endsWith("ṅa")
+				|| transformed.endsWith("cha") //TODO: Exception kharcha
+				|| transformed.endsWith("ja")
+				|| transformed.endsWith("ṭa")
+				|| transformed.endsWith("ṭha")
+				|| transformed.endsWith("pa")
+				|| transformed.endsWith("bha")
+				|| transformed.endsWith("ma")
+				|| transformed.endsWith("ra") //TODO: EXCEPTION KHERA, NIRA, TIRA, JAMERA, KSHETRA
+				|| transformed.endsWith("sa")
+				|| transformed.endsWith("sha")
+				|| transformed.endsWith("ba")
+				|| transformed.endsWith("va")
+				|| (transformed.endsWith("ta") && !transformed.endsWith("sita"))
+				|| transformed.endsWith("tha")
+				|| transformed.endsWith("la") 
+				|| transformed.endsWith("da") 
+				|| transformed.endsWith("dha") 
+				
+			
+				
+				
+				) {
+			transformed = transformed.substring(0, transformed.length() -1);
+		}
+		return transformed;
+	}
+
+
+
+	private static String applyPreEndingExceptionRules(String transformed) {
+		if(transformed.endsWith("ṅamā")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("ṅamā")) + "ṅmā";
+		}
+		
+		if(transformed.endsWith("lako")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("lako")) + "lko";
+		}
+		
+		if(transformed.endsWith("lakā")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("lakā")) + "lkā";
+		}
+		
+		if(transformed.endsWith("sako")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("sako")) + "sko"; //e.g. सुट्केसको  > suṭkēsako > suṭkēsko 
+		}
+		
+		if(transformed.endsWith("ramā")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("ramā")) + "rmā";
+		}
+		
+		if(transformed.endsWith("lamā")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("lamā")) + "lmā"; //e.g. दालमा > dālamā > dālmā 
+		}
+
+		
+		if(transformed.endsWith("ṇakā")) { //TODO: process exception for Krishnaka
+			transformed = transformed.substring(0, transformed.lastIndexOf("ṇakā")) + "ṇkā"; //e.g. कारणका  > kāraṇakā > kāraṇkā
+		}
+		
+		if(transformed.endsWith("valē")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("valē")) + "vlē"; //e.g. गरिवले > garivalē > garivlē
+			
+		}
+		
+		if(transformed.endsWith("palē")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("palē")) + "plē"; //e.g. चित्ररुपले  > chitrarupalē > chitraruplē
+			
+		}
+		
+		if(transformed.endsWith("nakai")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("nakai")) + "nkai"; 
+			
+		}
+		
+		if(transformed.endsWith("ralāī")) {
+			transformed = transformed.substring(0, transformed.lastIndexOf("ralāī")) + "rlāī"; //e.g. ह्यांगरलाई
+			
+		}
+		
+		return transformed;
 	}
 
 	
