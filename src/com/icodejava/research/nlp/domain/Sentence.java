@@ -12,14 +12,15 @@ public class Sentence {
 	int id;
 	boolean linkedWordExtracted;
 	boolean modified;
+	boolean isMarkedForDeletion;
 	String value;
 	String valueRomanizedISO;
-	String valueRomanizedStandard;
+	String verified;
 
-	boolean verified;
+	String valueRomanizedStandard;
 	int wordCount;
+
 	List<Word> words;
-	
 	public Sentence(int id, String value) {
 		this.id = id;
 		this.value = value;
@@ -27,21 +28,20 @@ public class Sentence {
 	public int getId() {
 		return id;
 	}
+	
 	public String getValue() {
 		return value;
 	}
 	public String getValueRomanizedISO() {
 		return valueRomanizedISO;
 	}
-	
 	public String getValueRomanizedStandard() {
 		return valueRomanizedStandard;
 	}
-
 	public int getWordCount() {
 		return wordCount;
 	}
-
+	
 	public List<Word> getWords() {
 		if (words == null) {
 			words = new ArrayList<Word>();
@@ -53,11 +53,15 @@ public class Sentence {
 		return linkedWordExtracted;
 	}
 
+	public boolean isMarkedForDeletion() {
+		return isMarkedForDeletion;
+	}
+
 	public boolean isModified() {
 		return modified;
 	}
 
-	public boolean isVerified() {
+	public String getVerified() {
 		return verified;
 	}
 
@@ -67,6 +71,10 @@ public class Sentence {
 
 	public void setLinkedWordExtracted(boolean linkedWordExtracted) {
 		this.linkedWordExtracted = linkedWordExtracted;
+	}
+
+	public void setMarkedForDeletion(boolean isMarkedForDeletion) {
+		this.isMarkedForDeletion = isMarkedForDeletion;
 	}
 
 	public void setModified(boolean modified) {
@@ -86,7 +94,7 @@ public class Sentence {
 		this.valueRomanizedStandard = valueRomanizedStandard;
 	}
 
-	public void setVerified(boolean verified) {
+	public void setVerified(String verified) {
 		this.verified = verified;
 	}
 
@@ -96,6 +104,11 @@ public class Sentence {
 
 	public void setWords(List<Word> words) {
 		this.words = words;
+	}
+	
+	@Override
+	public String toString() {
+		return id + " \t" + value;
 	}
 
 }
