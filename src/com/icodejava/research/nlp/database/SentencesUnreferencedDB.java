@@ -26,10 +26,12 @@ public class SentencesUnreferencedDB extends DBUtility {
 		//createSentencesUnreferencedTable();
 		//selectAllRecords();
 		//selectSentencesWithLengthGreaterThan(50);
+		//selectRecordsBetweenIds(1,10);
+		selectUnverifiedSentencesRandom(10,5,20);
 	}
 	
 	public static void createSentencesUnreferencedTable() {
-		String sql = "CREATE TABLE IF NOT EXISTS "+ Tables.SENTENCE_UNREFERENCED +" (\n" + " ID integer PRIMARY KEY AUTOINCREMENT,\n"
+		String sql = "CREATE TABLE IF NOT EXISTS "+ Tables.SENTENCES_UNREFERENCED +" (\n" + " ID integer PRIMARY KEY AUTOINCREMENT,\n"
 				 + " SENTENCE text NOT NULL,\n"
 				 + " LINKED_WORD_EXTRACT_UNREF CHAR(1),\n"
 				 + " VERIFIED CHAR(1)\n" + ");";
@@ -43,10 +45,38 @@ public class SentencesUnreferencedDB extends DBUtility {
 		return null;
 	}
 	
+	public static List<Sentence> selectUnverifiedSentencesRandom(int limit, int minWordCount, int maxWordCount) {
+		List<Sentence> sentences = new ArrayList<Sentence>();
+		//(SELECT id FROM table ORDER BY RANDOM() LIMIT x)
+		
+		String sql = "SELECT * FROM " +  Tables.SENTENCES_UNREFERENCED +" WHERE ID IN "
+				+ "(SELECT ID FROM " + Tables.SENTENCES_UNREFERENCED + " WHERE VERIFIED IS NULL AND WORDS_COUNT BETWEEN " + minWordCount + 
+				" AND " + maxWordCount +" ORDER BY RANDOM() LIMIT " + limit +");";
+		
+		System.out.println(sql);
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				Sentence sentence = new Sentence(rs.getInt("ID"), rs.getString("SENTENCE"));
+				sentences.add(sentence);
+				System.out.println(sentence);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return sentences;
+		
+		
+	}
+	
 	
 	public static void deleteRecordsByID(int id) {
 
-		String sql = "DELETE FROM "+ Tables.SENTENCE_UNREFERENCED +" WHERE ID=" + id;
+		String sql = "DELETE FROM "+ Tables.SENTENCES_UNREFERENCED +" WHERE ID=" + id;
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -64,7 +94,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 	public static List<Sentence> selectAllRecords() {
 		List<Sentence> sentences = new ArrayList<Sentence>();
 		
-		String sql = "SELECT * FROM " +  Tables.SENTENCE_UNREFERENCED +" ORDER BY SENTENCE ASC";
+		String sql = "SELECT * FROM " +  Tables.SENTENCES_UNREFERENCED +" ORDER BY SENTENCE ASC";
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				Statement stmt = conn.createStatement();
@@ -72,7 +102,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 
 			while (rs.next()) {
 				Sentence sentence = new Sentence(rs.getInt("ID"), rs.getString("SENTENCE"));
-				sentence.setVerified("Y".equalsIgnoreCase(rs.getString("VERIFIED")));
+				sentence.setVerified(rs.getString("VERIFIED"));
 				sentence.setLinkedWordExtracted("Y".equalsIgnoreCase(rs.getString("LINKED_WORD_EXTRACT_UNREF")));
 				//System.out.println(rs.getInt("ID") + "\t" + rs.getString("SENTENCE") + "\t" + rs.getString("VERIFIED") + "\t" + rs.getString("LINKED_WORD_EXTRACT_UNREF"));
 				
@@ -88,7 +118,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 	public static List<Sentence> selectRecordsWithLimit(int limit) {
 		List<Sentence> sentences = new ArrayList<Sentence>();
 		
-		String sql = "SELECT * FROM " +  Tables.SENTENCE_UNREFERENCED +" ORDER BY SENTENCE ASC "+ " LIMIT " + limit;
+		String sql = "SELECT * FROM " +  Tables.SENTENCES_UNREFERENCED +" ORDER BY SENTENCE ASC "+ " LIMIT " + limit;
 		
 		System.out.println("sql");
 
@@ -98,7 +128,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 
 			while (rs.next()) {
 				Sentence sentence = new Sentence(rs.getInt("ID"), rs.getString("SENTENCE"));
-				sentence.setVerified("Y".equalsIgnoreCase(rs.getString("VERIFIED")));
+				sentence.setVerified(rs.getString("VERIFIED"));
 				sentence.setLinkedWordExtracted("Y".equalsIgnoreCase(rs.getString("LINKED_WORD_EXTRACT_UNREF")));
 				System.out.println(rs.getInt("ID") + "\t" + rs.getString("SENTENCE") + "\t" + rs.getString("VERIFIED") + "\t" + rs.getString("LINKED_WORD_EXTRACT_UNREF"));
 				
@@ -114,7 +144,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 	}
 	
 	public static void selectRecordCountByLength() {
-		String sql = "SELECT Length(SENTENCE), count (*) FROM " +  Tables.SENTENCE_UNREFERENCED +" GROUP BY LENGTH(SENTENCE) ORDER BY 1 DESC";
+		String sql = "SELECT Length(SENTENCE), count (*) FROM " +  Tables.SENTENCES_UNREFERENCED +" GROUP BY LENGTH(SENTENCE) ORDER BY 1 DESC";
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				Statement stmt = conn.createStatement();
@@ -132,7 +162,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 	public static List<Sentence> selectRecordsWithNoWordCount(int limit) {
 		List<Sentence> sentences = new ArrayList<Sentence>();
 		
-		String sql = "SELECT * FROM " +  Tables.SENTENCE_UNREFERENCED +" WHERE WORDS_COUNT IS NULL LIMIT "+limit;
+		String sql = "SELECT * FROM " +  Tables.SENTENCES_UNREFERENCED +" WHERE WORDS_COUNT IS NULL LIMIT "+limit;
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				Statement stmt = conn.createStatement();
@@ -156,7 +186,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 	
 	public static boolean alreadyExists(String sentence) {
 		boolean alreadyExists = false;
-		String sql = "SELECT * FROM " +  Tables.SENTENCE_UNREFERENCED +" WHERE SENTENCE=\"" + sentence + "\"";
+		String sql = "SELECT * FROM " +  Tables.SENTENCES_UNREFERENCED +" WHERE SENTENCE=\"" + sentence + "\"";
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				Statement stmt = conn.createStatement();
@@ -180,7 +210,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 			return rowID;
 		}
 
-		String sql = "INSERT INTO "+ Tables.SENTENCE_UNREFERENCED + " (SENTENCE) VALUES(?)";
+		String sql = "INSERT INTO "+ Tables.SENTENCES_UNREFERENCED + " (SENTENCE) VALUES(?)";
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -190,7 +220,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 
 			// Get Article ID back
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("select seq from sqlite_sequence where name=\"" + Tables.SENTENCE_UNREFERENCED + "\"");
+			ResultSet rs = stmt.executeQuery("select seq from sqlite_sequence where name=\"" + Tables.SENTENCES_UNREFERENCED + "\"");
 
 			//System.out.println("Inserted Record ID: " + (rowID = rs.getInt(1)));
 
@@ -205,7 +235,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 	
 	public static void updateSentence(int id, String sentenceNewValue) {
 
-		String sql = "UPDATE " + Tables.SENTENCE_UNREFERENCED + " SET SENTENCE=? WHERE ID=?";
+		String sql = "UPDATE " + Tables.SENTENCES_UNREFERENCED + " SET SENTENCE=? WHERE ID=?";
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -228,7 +258,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 	
 	
 	public static void selectSentencesWithLengthGreaterThan(int length) {
-		String sql = "SELECT * FROM " +  Tables.SENTENCE_UNREFERENCED +" where LENGTH(SENTENCE) > " + length + " ORDER BY 1 DESC";
+		String sql = "SELECT * FROM " +  Tables.SENTENCES_UNREFERENCED +" where LENGTH(SENTENCE) > " + length + " ORDER BY 1 DESC";
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				Statement stmt = conn.createStatement();
@@ -287,7 +317,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 	}
 
 	private static void updateSentenceWordCount(int id, int wordCount) {
-		String sql = "UPDATE " + Tables.SENTENCE_UNREFERENCED + " SET WORDS_COUNT=? WHERE ID=?";
+		String sql = "UPDATE " + Tables.SENTENCES_UNREFERENCED + " SET WORDS_COUNT=? WHERE ID=?";
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -313,14 +343,14 @@ public class SentencesUnreferencedDB extends DBUtility {
 	
 	public static void removeDuplicateWords() throws InterruptedException {
 		//Query Database And get a list of duplicate words
-		String sql = "select sentence, count(*) from " + Tables.SENTENCE_UNREFERENCED + " group by word having count(*) > 1";
+		String sql = "select sentence, count(*) from " + Tables.SENTENCES_UNREFERENCED + " group by SENTENCE having count(*) > 1";
 		List<String> sentencesList = new ArrayList<String> ();
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
 
 			while (rs.next()) {
-				sentencesList.add(rs.getString("WORD"));
+				sentencesList.add(rs.getString("SENTENCE"));
 			}
 			
 			System.out.println("Total " + sentencesList.size() + " sentences found with duplicate entries" );
@@ -361,7 +391,7 @@ public class SentencesUnreferencedDB extends DBUtility {
 	 * @return
 	 */
 	private static List<Sentence> selectSentenceBySentenceValue(String sentenceValue) {
-		String sql = "SELECT * FROM " +  Tables.SENTENCE_UNREFERENCED +" WHERE WORD=\""+sentenceValue+ "\" ORDER BY WORD ASC";
+		String sql = "SELECT * FROM " +  Tables.SENTENCES_UNREFERENCED +" WHERE SENTENCE=\""+sentenceValue+ "\" ORDER BY SENTENCE ASC";
 
 		List<Sentence> sentences = new ArrayList<Sentence>();
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
@@ -378,6 +408,73 @@ public class SentencesUnreferencedDB extends DBUtility {
 		}
 		
 		return sentences;
+	}
+	
+	
+	
+	public static List<Sentence> selectRecordsBetweenIds(int start, int end) {
+		List<Sentence> sentences = new ArrayList<Sentence>();
+		
+		 //SELECT * FROM table WHERE id IN (SELECT id FROM table ORDER BY RANDOM() LIMIT x)
+		String sql = "SELECT * FROM " +  Tables.SENTENCES_UNREFERENCED +" WHERE ID BETWEEN " + start + " AND " + end;
+
+		System.out.println(sql);
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				Sentence sentence = new Sentence(rs.getInt("ID"), rs.getString("SENTENCE"));
+				sentences.add(sentence);
+				
+				System.out.println(sentence);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return sentences;
+	}
+
+	public static void updateSentenceVerificationStatus(int id, String verified) {
+		String sql = "UPDATE " + Tables.SENTENCES_UNREFERENCED + " SET VERIFIED=? WHERE ID=?";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, verified);
+			pstmt.setInt(2, id);
+			int result = pstmt.executeUpdate();
+
+			if(result > 0) {
+				//System.out.println("Successfully updated sentence");
+			} else {
+				//System.out.println("Could not update the sentence. Make sure the ID exists or there are no other issues");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		
+	}
+
+	public static int getVerifiedSentenceCount() {
+		int count = 0;
+		String sql = "SELECT count (*) FROM " +  Tables.SENTENCES_UNREFERENCED +" WHERE VERIFIED = \"Y\"";
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return count;
 	}
 
 
@@ -457,88 +554,9 @@ public class SentencesUnreferencedDB extends DBUtility {
 		}
 	}
 	
-	public static List<Word> selectRecordsBetweenIds(int start, int end) {
-		List<Word> words = new ArrayList<Word>();
-		
-		 //SELECT * FROM table WHERE id IN (SELECT id FROM table ORDER BY RANDOM() LIMIT x)
-		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE ID BETWEEN " + start + " AND " + end;
-
-		System.out.println(sql);
-		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
-				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)) {
-
-			while (rs.next()) {
-				words.add(new Word(rs.getInt("ID"), rs.getString("WORD"), rs.getString("VERIFIED") ));
-				//System.out.println(rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" + rs.getString("VERIFIED"));
-			}
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-		
-		return words;
-	}
-	
-
-	
-	
-
-	public static void deleteRecordsByDomain(String word) {
-
-		String sql = "DELETE FROM "+ Tables.WORDS_UNREFERENCED +" WHERE ID=\"" + word +"\"";
-
-		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-			int count = pstmt.executeUpdate();
-
-			System.out.println("Successfully Deleted records: " +  count);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-
-	}
 
 	
 
-	
-
-	
-	public static void cleanWords() {
-		List<Word> words = selectRecordsBetweenIds(0, 1000000);
-		//List<Word> words = selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%à%'");
-		for(Word word:words) {
-			String current = word.getWord();
-			//System.out.print(word + "\t");
-			word.setWord(NPTokenizer.cleanWordToken(word.getWord()));
-			
-			String cleaned = word.getWord();
-			
-			if(!current.equalsIgnoreCase(cleaned)) {
-				word.setModified(true);
-			}
-			
-			//System.out.print(word + "\n");
-		}
-		
-		updateWords(words);
-		
-		cleanStrangeWords();
-		
-		
-	}
-	
-	public static void cleanStrangeWords() {
-		List<Word> words = selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%à%'");
-		
-		for (Word word: words){
-			System.out.println(word);
-			deleteRecordsByID(word.getId());
-		}
-		
-	}
 	 */
 	
 

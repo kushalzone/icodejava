@@ -16,12 +16,30 @@ public class SentenceUnreferencedService {
 		
 		//extractUnreferencedSentencesFromArticles(20000);
 		//cleanSentences(2000000);
-		updateWordCount(200000);
+		//updateWordCount(200000);
 		
 		removeDuplication();
 		
+		updateSentenceVerification(null);
+		getVerifiedSentenceCount();
+		
 	}
 	
+	public static int getVerifiedSentenceCount() {
+		return SentencesUnreferencedDB.getVerifiedSentenceCount();
+		
+	}
+
+	public static void updateSentenceVerification(List<Sentence> sentences) {
+		for(Sentence sentence: sentences) {
+			if(sentence.isMarkedForDeletion()) {
+				SentencesUnreferencedDB.deleteRecordsByID(sentence.getId());
+			} else if(sentence.getVerified() != null) {
+				SentencesUnreferencedDB.updateSentenceVerificationStatus(sentence.getId(), sentence.getVerified());
+			}
+		}
+	}
+
 	private static void removeDuplication() throws InterruptedException {
 		SentencesUnreferencedDB.removeDuplicateWords();
 		

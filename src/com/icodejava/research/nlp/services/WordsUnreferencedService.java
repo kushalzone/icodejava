@@ -29,12 +29,19 @@ public class WordsUnreferencedService {
 		 //tagCompoundWords(HOW_MANY_WORDS);
 		// processUnreferencedWords(10000);
 		// processWordsFromFile("src/com/icodejava/research/nlp/sources/other/misc_words.txt");
-		 
-		 removeDuplication();
+		 getRomanizedWordCount();
+		 //removeDuplication();
 
 	}
 
-	private static void removeDuplication() throws InterruptedException {
+	public static int getRomanizedWordCount() {
+		int count = WordsUnreferencedDB.selectRomanizedWordsCount();
+		System.out.println("Romanized Word Count: " + count);
+		return count;
+		
+	}
+
+	public static void removeDuplication() throws InterruptedException {
 		WordsUnreferencedDB.removeDuplicateWords();
 		
 	}
@@ -106,7 +113,7 @@ public class WordsUnreferencedService {
 	 * 
 	 * @param limit --> How many words to fetch from the database
 	 */
-	private static void tagCompoundWords(int limit) {
+	public static void tagCompoundWords(int limit) {
 		List<Word> words = WordsUnreferencedDB.selectRecordsNotMarkedAsCompound(limit);
 		
 		
@@ -131,7 +138,7 @@ public class WordsUnreferencedService {
 	private static boolean endsWithCompoundWord(String word) {
 		boolean shouldProcess = false;
 		for(CompoundWordEnding cwe: CompoundWordEnding.values()) {
-			if(word.endsWith(cwe.getNepaliWordEnding()) && word.length() > cwe.getNepaliWordEnding().length() && !isExceptionCompoundWordEnding(cwe)) {
+			if(word.endsWith(cwe.getNepaliWordEnding()) && word.length() > cwe.getNepaliWordEnding().length() /*&& !isExceptionCompoundWordEnding(cwe)*/) {
 				shouldProcess = true;
 			}
 
@@ -162,7 +169,7 @@ public class WordsUnreferencedService {
 		List<Word> words = WordsUnreferencedDB.selectWordsNotRomanized(limit);
 		
 		for(Word word: words) {
-			word.setValueRomanizedISOStandard(DevanagariUnicodeToRomanEnglish.convertUnicodeNepaliToRomanizedEnglish(word.getWord()));
+			word.setValueRomanizedISOStandard(DevanagariUnicodeToRomanEnglish.convertWord(word.getWord()));
 		}
 		
 		
@@ -175,7 +182,7 @@ public class WordsUnreferencedService {
 
 				word=WordsUnreferencedDB.selectWordByID(word.getId());
 				if(word != null && word.getWord() != null) {
-					word.setValueRomanizedISOStandard(DevanagariUnicodeToRomanEnglish.convertUnicodeNepaliToRomanizedEnglish(word.getWord()));
+					word.setValueRomanizedISOStandard(DevanagariUnicodeToRomanEnglish.convertWord(word.getWord()));
 					
 					WordsUnreferencedDB.updateRomanizationISO(word.getId(), word.getValueRomanizedISOStandard());
 				}
@@ -277,4 +284,16 @@ public class WordsUnreferencedService {
 			}
 	}
 
+	public static void cleanWordsInDatabase(int startId, int endId) {
+		
+		WordsUnreferencedDB.cleanWords(startId, endId);
+		
+	}
+	
+	public static void updateWordsClassification(List<Word> words) {
+		for(Word word: words) {
+			WordsUnreferencedDB.updateWordClassification(word);
+		}
+	}
+	
 }
