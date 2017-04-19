@@ -11,6 +11,7 @@ import com.icodejava.research.nlp.database.Tables;
 import com.icodejava.research.nlp.database.WordsUnreferencedDB;
 import com.icodejava.research.nlp.domain.CompoundWordEnding;
 import com.icodejava.research.nlp.domain.Word;
+import com.icodejava.research.nlp.stemmer.NepaliStemmer;
 import com.icodejava.research.nlp.utils.DevanagariUnicodeToRomanEnglish;
 
 public class WordsUnreferencedService {
@@ -31,7 +32,21 @@ public class WordsUnreferencedService {
 		// processWordsFromFile("src/com/icodejava/research/nlp/sources/other/misc_words.txt");
 		 getRomanizedWordCount();
 		 //removeDuplication();
+		 
+		 getRandomCompoundWords(1000);
 
+	}
+
+	public static List<Word> getRandomCompoundWords(int limit) {
+		List<Word> words = WordsUnreferencedDB.selectRandomCompoundWords(limit);
+		
+		for(Word word:words) {
+			word.setRootWord(NepaliStemmer.getNepaliRootWord(word.getWord()));
+			//System.out.println("Word:" + word.getWord() + " Root: " + word.getRootWord());
+		}
+		
+		return words;
+		
 	}
 
 	public static int getRomanizedWordCount() {
@@ -56,7 +71,8 @@ public class WordsUnreferencedService {
 		
 		  List<Word> words = WordsUnreferencedDB.selectCompoundWordsRootWordsNotExtracted(compoundWordEnding);
 		  for(Word word:words) {
-			  word.setRootWord(NPTokenizer.getNepaliRootWord(word.getWord()));
+			  word.setRootWord(NepaliStemmer.getNepaliRootWord(word.getWord()));
+			  word.setIsRootWordExtracted("Y");
 			  //System.out.println(word.getWord() +"-->" + word.getRootWord());
 		  }
 		  
@@ -295,5 +311,12 @@ public class WordsUnreferencedService {
 			WordsUnreferencedDB.updateWordClassification(word);
 		}
 	}
+	
+	public static void updateWordRoot(List<Word> words) {
+		for(Word word: words) {
+			WordsUnreferencedDB.updateWordRootWordAndTag(word);
+		}
+	}
+	
 	
 }

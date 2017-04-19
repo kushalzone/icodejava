@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.icodejava.blog.published.utilities.FileUtilities;
-import com.icodejava.research.nlp.NPTokenizer;
 
 public class DevanagariUnicodeToRomanEnglish {
 	

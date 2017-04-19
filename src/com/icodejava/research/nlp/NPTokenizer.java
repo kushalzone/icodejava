@@ -50,8 +50,6 @@ public class NPTokenizer {
 
         //getWordFrequencyMap(text);
         
-        getNepaliRootWord("विस्मयादिबोध");
-
     }
 
     /**
@@ -100,20 +98,7 @@ public class NPTokenizer {
         return words;
     }
     
-    public static String getNepaliRootWord(String compoundWord) {
-    	for (CompoundWordEnding dir : CompoundWordEnding.values()) {
-    		 String cwe = dir.getNepaliWordEnding();
-    		 
-    		 if(compoundWord.endsWith(cwe) && compoundWord.length() > cwe.length()) {
-    		  compoundWord = compoundWord.replaceAll(cwe, "");
-    		 }
-    		  
-    		}
-    	
-    	compoundWord = compoundWord.trim();
-    	
-    	return compoundWord;
-    }
+
 
     public static String cleanWordToken(String word) {
 

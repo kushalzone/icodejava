@@ -16,7 +16,40 @@ import com.icodejava.research.nlp.domain.Word;
 public class WordsUnreferencedDB extends DBUtility {
 	
 	
+	
 	public static final String DATABASE_URL = "jdbc:sqlite:C:/Users/paudyals/Desktop/NLP/nlpdb/npl3.db";//shadowed from parent
+	
+	
+	public static void main (String args []) throws ClassNotFoundException {
+		//createNewDatabase(DATABASE_URL);
+		//createWordsUnreferencedTable();
+		//insertWord("test");
+		//updateWord(4, "Tested");
+		//selectAllRecords();
+		//deleteAllRecords(DATABASE_URL, Tables.WORDS_UNREFERENCED);
+		//deleteRecordsByID(4);
+		
+		
+		//selectRandomRecords(1000);
+		//selectRecordsBetweenIds(0, 50000);
+		//selectRecordCountByLength();
+		
+		//selectWordWithLengthGreaterThan(20);
+		//selectWordWithLengthEqualTo(3);
+		
+		//cleanWords();
+		//cleanStrangeWords();
+		
+		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%नु'");
+		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word = '÷'");
+		
+		//selectWithQuery("SELECT COUNT (DISTINCT WORD) FROM " + Tables.WORDS_UNREFERENCED);
+		
+		//selectCompoundWords("लाई");
+		//selectRecordsNotMarkedAsCompoundRandom(10);
+		selectRandomCompoundWords(10);
+		
+	}
 	
 	
 	public static boolean alreadyExists(String word) {
@@ -186,35 +219,7 @@ public class WordsUnreferencedDB extends DBUtility {
 		return rowID;
 	}
 	
-	public static void main (String args []) throws ClassNotFoundException {
-		//createNewDatabase(DATABASE_URL);
-		//createWordsUnreferencedTable();
-		//insertWord("test");
-		//updateWord(4, "Tested");
-		//selectAllRecords();
-		//deleteAllRecords(DATABASE_URL, Tables.WORDS_UNREFERENCED);
-		//deleteRecordsByID(4);
-		
-		
-		//selectRandomRecords(1000);
-		//selectRecordsBetweenIds(0, 50000);
-		//selectRecordCountByLength();
-		
-		//selectWordWithLengthGreaterThan(20);
-		//selectWordWithLengthEqualTo(3);
-		
-		//cleanWords();
-		//cleanStrangeWords();
-		
-		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word like '%नु'");
-		//selectWithQuery("SELECT * FROM " + Tables.WORDS_UNREFERENCED +  " where word = '÷'");
-		
-		//selectWithQuery("SELECT COUNT (DISTINCT WORD) FROM " + Tables.WORDS_UNREFERENCED);
-		
-		//selectCompoundWords("लाई");
-		selectRecordsNotMarkedAsCompoundRandom(10);
-		
-	}
+
 	
 	public static void removeDuplicateWords() throws InterruptedException {
 		//Query Database And get a list of duplicate words
@@ -493,6 +498,27 @@ public class WordsUnreferencedDB extends DBUtility {
 		return words;
 	}
 	
+	public static List<Word> selectRandomCompoundWords(int limit) {
+
+		String sql = "SELECT * FROM " +  Tables.WORDS_UNREFERENCED +" WHERE ID IN (SELECT ID FROM " + Tables.WORDS_UNREFERENCED +" WHERE IS_COMPOUND_WORD='Y' AND ROOT_WORD IS NULL ORDER BY RANDOM()  LIMIT " + limit + ") ORDER BY WORD ASC";
+
+		List<Word> words = new ArrayList<Word>();
+		
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				//System.out.println(rs.getInt("ID") + "\t" + rs.getString("WORD") + "\t" + rs.getString("VERIFIED"));
+				words.add(new Word(rs.getInt("ID"), rs.getString("WORD"), rs.getString("VERIFIED") ));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return words;
+	}
+	
 	
 
 	public static int selectRomanizedWordsCount() {
@@ -698,7 +724,7 @@ public class WordsUnreferencedDB extends DBUtility {
 			" CLASSIFICATION_2=\"" +  word.getClassfication2() + "\"," +
 			" CLASSIFICATION_3=\"" +  word.getClassfication3() + "\"," +
 			" CLASSIFICATION_4=\"" +  word.getClassfication4() + "\"," +
-			" CLASSIFICATION_5=\"" +  word.getClassfication5() + "\"," +
+			" CLASSIFICATION_5=\"" +  word.getClassfication5() + "\"" +
 			" WHERE ID=" + word.getId(); 
 		
 		
@@ -726,13 +752,13 @@ public class WordsUnreferencedDB extends DBUtility {
 	 * 
 	 * @param word
 	 */
-	private static void updateWordRootWordAndTag(Word word) {
+	public static void updateWordRootWordAndTag(Word word) {
 		
 		if(word.getId() < 1 || word.getWord() == null || word.getRootWord() == null) {
 			return;
 		}
 		
-		String sql = "UPDATE " + Tables.WORDS_UNREFERENCED + " SET ROOT_WORD=\""+word.getRootWord()+"\", ROOT_WORD_EXTRACTED= \"Y\" WHERE ID=" +word.getId();
+		String sql = "UPDATE " + Tables.WORDS_UNREFERENCED + " SET ROOT_WORD=\""+word.getRootWord()+"\", ROOT_WORD_EXTRACTED= \""+word.getIsRootWordExtracted()+"\" WHERE ID=" +word.getId();
 		//System.out.println(sql);
 
 		try (Connection conn = DriverManager.getConnection(DATABASE_URL);

@@ -1,6 +1,6 @@
 package com.icodejava.research.nlp.domain;
 
-import com.icodejava.research.nlp.NPTokenizer;
+import com.icodejava.research.nlp.stemmer.NepaliStemmer;
 
 /**
  * @author Kushal Paduyal
@@ -16,6 +16,8 @@ public class Word {
 	private String valueRomanizedCommon;
 	private String verified;
 	private String isCompoundWord;
+	private String isRootWordExtracted;
+	private String needsCleaning;
 	private String classfication1;
 	private String classfication2;
 	private String classfication3;
@@ -136,8 +138,24 @@ public class Word {
 	}
 	
 	public String getRootSplited() {
-		String root = NPTokenizer.getNepaliRootWord(word);
+		String root = NepaliStemmer.getNepaliRootWord(word);
 		return word + "-->" + root + " + " + word.replaceAll(root, "");
+	}
+
+	public String getNeedsCleaning() {
+		return needsCleaning;
+	}
+
+	public void setNeedsCleaning(String needsCleaning) {
+		this.needsCleaning = needsCleaning;
+	}
+
+	public String getIsRootWordExtracted() {
+		return isRootWordExtracted;
+	}
+
+	public void setIsRootWordExtracted(String isRootWordExtracted) {
+		this.isRootWordExtracted = isRootWordExtracted;
 	}
 
 	public String toString() {
