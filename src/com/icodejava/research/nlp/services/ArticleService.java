@@ -2,9 +2,9 @@ package com.icodejava.research.nlp.services;
 
 import java.util.List;
 
-import com.icodejava.research.nlp.NPTokenizer;
 import com.icodejava.research.nlp.database.ArticlesDB;
 import com.icodejava.research.nlp.domain.Article;
+import com.icodejava.research.nlp.tokenizer.NPTokenizer;
 
 public class ArticleService {
 	

@@ -3,7 +3,7 @@ package com.icodejava.research.nlp.test;
 import java.util.List;
 
 import com.icodejava.blog.published.utilities.FileUtilities;
-import com.icodejava.research.nlp.NPTokenizer;
+import com.icodejava.research.nlp.tokenizer.NPTokenizer;
 
 public class NPTokenizerTest {
 	

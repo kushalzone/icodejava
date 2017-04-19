@@ -5,13 +5,13 @@ import java.io.FileReader;
 import java.util.Arrays;
 import java.util.List;
 
-import com.icodejava.research.nlp.NPTokenizer;
 import com.icodejava.research.nlp.database.ArticlesDB;
 import com.icodejava.research.nlp.database.Tables;
 import com.icodejava.research.nlp.database.WordsUnreferencedDB;
 import com.icodejava.research.nlp.domain.CompoundWordEnding;
 import com.icodejava.research.nlp.domain.Word;
 import com.icodejava.research.nlp.stemmer.NepaliStemmer;
+import com.icodejava.research.nlp.tokenizer.NPTokenizer;
 import com.icodejava.research.nlp.utils.DevanagariUnicodeToRomanEnglish;
 
 public class WordsUnreferencedService {

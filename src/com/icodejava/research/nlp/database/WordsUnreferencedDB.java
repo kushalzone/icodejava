@@ -9,9 +9,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.icodejava.research.nlp.NPTokenizer;
 import com.icodejava.research.nlp.domain.Grammar;
 import com.icodejava.research.nlp.domain.Word;
+import com.icodejava.research.nlp.tokenizer.NPTokenizer;
 
 public class WordsUnreferencedDB extends DBUtility {
 	

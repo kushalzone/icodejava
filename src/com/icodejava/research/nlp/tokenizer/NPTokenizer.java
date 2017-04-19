@@ -1,4 +1,4 @@
-package com.icodejava.research.nlp;
+package com.icodejava.research.nlp.tokenizer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
