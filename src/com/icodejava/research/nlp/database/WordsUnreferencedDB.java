@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.icodejava.research.nlp.domain.Grammar;
 import com.icodejava.research.nlp.domain.Word;
-import com.icodejava.research.nlp.tokenizer.NPTokenizer;
+import com.icodejava.research.nlp.tokenizer.NepaliTokenizer;
 
 public class WordsUnreferencedDB extends DBUtility {
 	
@@ -100,7 +100,7 @@ public class WordsUnreferencedDB extends DBUtility {
 		for(Word word:words) {
 			String current = word.getWord();
 			//System.out.print(word + "\t");
-			word.setWord(NPTokenizer.cleanWordToken(word.getWord()));
+			word.setWord(NepaliTokenizer.cleanWordToken(word.getWord()));
 			
 			String cleaned = word.getWord();
 			

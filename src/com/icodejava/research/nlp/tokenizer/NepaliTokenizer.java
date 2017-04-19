@@ -17,7 +17,7 @@ import com.icodejava.research.nlp.domain.Grammar;
 import com.icodejava.research.nlp.domain.WordFrequency;
 
 
-public class NPTokenizer {
+public class NepaliTokenizer {
     /*
     private static NPTokenizer tokenizer;
     public static NPTokenizer getInstance() {

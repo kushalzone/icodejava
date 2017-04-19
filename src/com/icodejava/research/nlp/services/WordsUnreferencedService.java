@@ -11,7 +11,7 @@ import com.icodejava.research.nlp.database.WordsUnreferencedDB;
 import com.icodejava.research.nlp.domain.CompoundWordEnding;
 import com.icodejava.research.nlp.domain.Word;
 import com.icodejava.research.nlp.stemmer.NepaliStemmer;
-import com.icodejava.research.nlp.tokenizer.NPTokenizer;
+import com.icodejava.research.nlp.tokenizer.NepaliTokenizer;
 import com.icodejava.research.nlp.utils.DevanagariUnicodeToRomanEnglish;
 
 public class WordsUnreferencedService {
@@ -253,7 +253,7 @@ public class WordsUnreferencedService {
 			String articleText = ArticlesDB.selectArticleTextByID(id);
 			
 			//tokenize 
-			List<String> words = NPTokenizer.tokenizeWords(articleText);
+			List<String> words = NepaliTokenizer.tokenizeWords(articleText);
 			
 			//then store the words to Database
 			for(String word:words) {
@@ -290,7 +290,7 @@ public class WordsUnreferencedService {
 
 				while ((word = reader.readLine()) != null) {
 
-					word=NPTokenizer.cleanWordToken(word);
+					word=NepaliTokenizer.cleanWordToken(word);
 					WordsUnreferencedDB.insertWord(word);
 				}
 

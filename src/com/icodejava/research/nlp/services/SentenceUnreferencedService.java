@@ -7,7 +7,7 @@ import com.icodejava.research.nlp.database.SentencesUnreferencedDB;
 import com.icodejava.research.nlp.database.WordsUnreferencedDB;
 import com.icodejava.research.nlp.domain.Article;
 import com.icodejava.research.nlp.domain.Sentence;
-import com.icodejava.research.nlp.tokenizer.NPTokenizer;
+import com.icodejava.research.nlp.tokenizer.NepaliTokenizer;
 import com.icodejava.research.nlp.utils.TextUtils;
 
 public class SentenceUnreferencedService {
@@ -85,7 +85,7 @@ public class SentenceUnreferencedService {
 			String articleText = ArticlesDB.selectArticleTextByID(id);
 			
 			//tokenize 
-			List<String> sentences = NPTokenizer.tokenizeSentence(articleText, NPTokenizer.Terminator.NP);
+			List<String> sentences = NepaliTokenizer.tokenizeSentence(articleText, NepaliTokenizer.Terminator.NP);
 			
 			//then store the sentence to Database
 			for(String sentence:sentences) {
@@ -123,7 +123,7 @@ public class SentenceUnreferencedService {
 			//System.out.println("Original: " + sentence.getValue());
 			
 			//clean sentences
-			sentence.setValue(NPTokenizer.cleanSentence(sentence.getValue()));
+			sentence.setValue(NepaliTokenizer.cleanSentence(sentence.getValue()));
 			
 			//System.out.println("Cleaned: " + sentence.getValue());
 

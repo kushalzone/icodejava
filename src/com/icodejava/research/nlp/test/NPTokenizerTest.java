@@ -3,7 +3,7 @@ package com.icodejava.research.nlp.test;
 import java.util.List;
 
 import com.icodejava.blog.published.utilities.FileUtilities;
-import com.icodejava.research.nlp.tokenizer.NPTokenizer;
+import com.icodejava.research.nlp.tokenizer.NepaliTokenizer;
 
 public class NPTokenizerTest {
 	
@@ -13,7 +13,7 @@ public class NPTokenizerTest {
 		//cleanBadExamplesTest();
 		//cleanSentences();
 		//System.out.println(NPTokenizer.cleanWordToken("िदपक"));
-		System.out.println(NPTokenizer.isMalformedWord("अाऊन"));
+		System.out.println(NepaliTokenizer.isMalformedWord("अाऊन"));
 //		String str;
 //		System.out.println(str = NPTokenizer.cleanSentence(",        ,       .        ,    -     (     -  ).  ’         (      ) ,                    .            .        –  .                ’   ’  मन परे हरियो नपरे रातो"));
 //		System.out.println(str = NPTokenizer.cleanSentence(",               ’       .                                    +                 + +  +          ,          =   मन परे हरियो नपरे रातो,"));
@@ -46,7 +46,7 @@ public class NPTokenizerTest {
 		//String text="    आधुनिक";
 		String text = "नपु¥याउँदा"; //नपुर्याउँदा
 		
-		text = NPTokenizer.cleanWordToken(text);
+		text = NepaliTokenizer.cleanWordToken(text);
 		
 		System.out.println(text);
 		
@@ -65,7 +65,7 @@ public class NPTokenizerTest {
 		//String sentence = "Follow Tweets about \"#hamrakura\" धेरै हेरिएको महिना भरि | वेब भरि पुरै गाउँवासी काँग्रेसमा प्रवेश, चुनावको मुखैमा ध्वस्त भयो एमालेको गढ ओलीकै क्षेत्रमा अनेरास्ववियु तेस्रो, झापामा फहरायो नेविसंघले झण्डा नेविसंघले जितेका ९० क्याम्पसमा को को भए अध्यक्ष";
 		String sentence = "100% YES, But, SAMAJ ISTHIR HUDAINA, CHALAYAMANA HUNCHHA, AWASEKATA, CHAHANA RA SAMAYA ANUSAR CHALNU PARCHHA. ARABA KA MAHILA LE HAMRA DIDI BAHINELE LAGAUNE SADHARAN PENT VEST LAGAYA BHANE TYAHAKO SAMAJLE TAPAI LE JASARI YAHA THUKNU BHAYO TYAKO 100 GUNA BADI TYAHA THUKCHHA, TARA YAHA SAMANYA BHAISAKEKO CHHA. KEHI SAMAYA AGHI PENT LAGAYAKO KETI DEKHADA MALAINI LAJ LAGTHYO TARA ALHILE SAMANYA LAGCHHA. GUPTANGA NAI DEKHAUDAI HIDEKA TA CHHAINANA HOLANI. MATHIKO TASBIR SAMMA CHAI HAMILE PACHAUNAI PARCHHA RADHA JEE.NATRA BIDESI KALAKARKO Demand HUNCHHA. 7 0 Share जानुका सुवेदी लेख्नुहुन्छ,    |   २०७३ फागुन ६ गते १२:१२ लेखिकाको िवचार संग म पनि सहमत छु";
 		
-		System.out.println(sentence=NPTokenizer.cleanSentence(sentence));
+		System.out.println(sentence=NepaliTokenizer.cleanSentence(sentence));
 		
 		for(Character c: sentence.toCharArray()) {
 			System.out.println(c + " " + (int) c);
@@ -80,7 +80,7 @@ public class NPTokenizerTest {
 		//System.out.println(lines.size());
 	
 		for(String line: lines) {
-			String clean = NPTokenizer.cleanWordToken(line+"()[]{}^");
+			String clean = NepaliTokenizer.cleanWordToken(line+"()[]{}^");
 			if(clean.trim().length() > 0) {
 				System.out.println(clean.trim());
 			}

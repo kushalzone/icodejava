@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.icodejava.research.nlp.database.ArticlesDB;
 import com.icodejava.research.nlp.domain.Article;
-import com.icodejava.research.nlp.tokenizer.NPTokenizer;
+import com.icodejava.research.nlp.tokenizer.NepaliTokenizer;
 
 public class ArticleService {
 	
@@ -30,7 +30,7 @@ public class ArticleService {
 			
 			//System.out.println("Original: " + title);
 			
-			title = NPTokenizer.cleanTitles(title);
+			title = NepaliTokenizer.cleanTitles(title);
 			
 			//System.out.println("Cleaned: " + title);
 			
